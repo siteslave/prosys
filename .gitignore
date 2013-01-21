@@ -7,3 +7,6 @@ application/logs/*
 !application/logs/.htaccess
 .idea/*
 system/*
+.buildpath
+.project
+.settings/
