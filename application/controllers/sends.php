@@ -1,9 +1,9 @@
 <?php
 
 class Sends extends CI_Controller{
-	
+
 	public $user_id;
-	
+
 	public function __construct()
     {
         parent::__construct();
@@ -12,30 +12,33 @@ class Sends extends CI_Controller{
 
         if(empty($username)) redirect(site_url('users/login'));
 
-
         $user_type = $this->session->userdata('user_type');
-        
+
         if($user_type != '3') redirect(site_url('errors/access_denied'));
-        
+
 		$this->user_id = $this->session->userdata('user_id');
-        
+
         $this->load->model('Product_model', 'product');
 		$this->load->model('Send_model', 'send');
 		$this->load->model('Service_model', 'service');
     }
-	
+
 	public function index(){
 		$this->layout->view('sends/index_view');
 	}
-	
-	
+	//------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Search service
+	 *
+	 * @param	string	The query string for search
+	 */
 	public function search_service(){
 		$query = $this->input->post('query');
 		if(empty($query)){
 			$json = '{"success": false, "msg": "No query found."}';
 		}else{
 			$rs = $this->send->search_service($query);
-			
+
 			if($rs){
 				$rows = json_encode($rs);
 				$json = '{"success": true, "rows": '.$rows.'}';
@@ -43,18 +46,23 @@ class Sends extends CI_Controller{
 				$json = '{"success": false, "msg": "No result."}';
 			}
 		}
-		
+
 		render_json($json);
 	}
-	
-	
+
+	//------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Search company
+	 *
+	 * @param	string	The query string for search
+	 */
 	public function search_company(){
 		$query = $this->input->post('query');
 		if(empty($query)){
 			$json = '{"success": false, "msg": "No query found."}';
 		}else{
 			$rs = $this->send->search_company($query);
-			
+
 			if($rs){
 				$rows = json_encode($rs);
 				$json = '{"success": true, "rows": '.$rows.'}';
@@ -62,13 +70,18 @@ class Sends extends CI_Controller{
 				$json = '{"success": false, "msg": "No result."}';
 			}
 		}
-		
+
 		render_json($json);
 	}
-	
+	//------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Save send data
+	 *
+	 * @param	array	The array of data for save.
+	 */
 	public function save(){
 		$data = $this->input->post('data');
-		
+
 		//check send exist
 		$ready = $this->send->check_ready($data['service_code']);
 		if(!$ready){
@@ -77,13 +90,13 @@ class Sends extends CI_Controller{
 			$data['send_code'] = generate_serial('SEND_SERVICE', TRUE);
 			$data['send_date'] = to_mysql_date($data['send_date']);
 	        $data['user_id'] = $this->session->userdata('user_id');
-			
+
 			$rs = $this->send->save($data);
 			if($rs){
 				$this->service->user_id = $this->user_id;
 	            $detail = 'ส่งซ่อม -> ' . get_company_name($data['company_id']);
 	            $this->service->save_activities($data['service_code'], $detail);
-					
+
 				if($data['change_status'] == '1'){
 					$detail = '	เปลี่ยนสถานะซ่อม -> ส่งซ่อม';
 	            	$this->service->save_activities($data['service_code'], $detail);
@@ -91,10 +104,10 @@ class Sends extends CI_Controller{
 				}
 				$json = '{"success": true}';
 			}else{
-				$json = '{"success": false, "msg": "Can\'t save service."}';	
+				$json = '{"success": false, "msg": "Can\'t save service."}';
 			}
 		}
-		
+
 		render_json($json);
 	}
 
@@ -109,7 +122,7 @@ class Sends extends CI_Controller{
         $stop = empty($stop) ? 25 : $stop;
 
         $limit = (int) $stop - (int) $start;
-		
+
 		$rs = $this->send->get_list_status($status, $limit, $start);
 		if($rs){
 			$rows = json_encode($rs);
@@ -117,10 +130,10 @@ class Sends extends CI_Controller{
 		}else{
 			$json = '{"success": false, "msg": "No result."}';
 		}
-		
+
 		render_json($json);
 	}
-	
+
 	public function get_list_status_total(){
 		$status = $this->input->post('status');
 		$status = empty($status) || isset($status) ? '-1' : $status;
@@ -131,10 +144,10 @@ class Sends extends CI_Controller{
 		}else{
 			$json = '{"success": true, "total": 0}';
 		}
-		
+
 		render_json($json);
 	}
-	
+
 	public function search_total(){
 		$query = $this->input->post('query');
 		$rs = $this->send->search_total($query);
@@ -143,7 +156,7 @@ class Sends extends CI_Controller{
 		}else{
 			$json = '{"success": true, "total": 0}';
 		}
-		
+
 		render_json($json);
 	}
  	public function search(){
@@ -155,12 +168,12 @@ class Sends extends CI_Controller{
         $stop = empty($stop) ? 25 : $stop;
 
         $limit = (int) $stop - (int) $start;
-		
+
 		if(empty($query)){
 			$json = '{"success": false, "msg": "No query found."}';
 		}else{
 			$rs = $this->send->search($query, $limit, $start);
-			
+
 			if($rs){
 				$rows = json_encode($rs);
 				$json = '{"success": true, "rows": '.$rows.'}';
@@ -168,15 +181,15 @@ class Sends extends CI_Controller{
 				$json = '{"success": false, "msg": "No result."}';
 			}
 		}
-		
+
 		render_json($json);
 	}
-	
+
 	public function update(){
 		$data = $this->input->post('data');
-		
+
 		if(empty($data)){
-			$json = '{"success": false, "msg": "No data for save."}';	
+			$json = '{"success": false, "msg": "No data for save."}';
 		}else{
 			$rs = $this->send->update($data);
 			if($rs){
@@ -188,15 +201,15 @@ class Sends extends CI_Controller{
 				$json = '{"success": false, "msg": "Can\t update data."}';
 			}
 		}
-		
+
 		render_json($json);
 	}
-	
+
 	public function save_get(){
 		$data = $this->input->post('data');
-		
+
 		if(empty($data)){
-			$json = '{"success": false, "msg": "No data for save."}';	
+			$json = '{"success": false, "msg": "No data for save."}';
 		}else{
 			$data['user_id'] = $this->user_id;
 			$rs = $this->send->save_get($data);
@@ -209,14 +222,14 @@ class Sends extends CI_Controller{
 				$json = '{"success": false, "msg": "Can\t update data."}';
 			}
 		}
-		
+
 		render_json($json);
 	}
 
 	public function remove_get(){
 
 		$data = $this->input->post('data');
-		
+
 		if(empty($data)){
 
 			$json = '{"success": false, "msg": "No data for save."}';
@@ -236,7 +249,7 @@ class Sends extends CI_Controller{
 				$json = '{"success": false, "msg": "Can\t remove data."}';
 			}
 		}
-		
+
 		render_json($json);
 	}
 
@@ -244,7 +257,7 @@ class Sends extends CI_Controller{
 
 		$id = $this->input->post('id');
 		$sv = $this->input->post('sv');
-		
+
 		if(empty($id)){
 
 			$json = '{"success": false, "msg": "No id found."}';
@@ -254,7 +267,7 @@ class Sends extends CI_Controller{
 			$data['user_id'] = $this->user_id;
 
 			$rs = $this->send->remove($id);
-			
+
 			if($rs){
                 $this->service->user_id = $this->user_id;
 				$detail = 'รับกลับ -> ลบรายการ';
@@ -264,7 +277,7 @@ class Sends extends CI_Controller{
 				$json = '{"success": false, "msg": "Can\t remove data."}';
 			}
 		}
-		
+
 		render_json($json);
 	}
 }
