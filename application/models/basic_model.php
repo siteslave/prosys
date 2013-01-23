@@ -8,4 +8,9 @@ class Basic_model extends CI_Model
         $rs = $this->db->get('priorities')->result();
         return $rs;
     }
+
+    public function get_service_type(){
+    	$rs = $this->db->get('service_types')->result();
+    	return $rs;
+    }
 }

@@ -82,7 +82,23 @@
                             </li>
                         </ul>
                     </li>
-
+					<li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="icon-print"></i> ระบบรายงาน
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="javascript:void(0);" data-name="btn_rpt_technician_by_service_type_main"><i class="icon-print"></i> สถิติการซ่อมของช่างแยกตามประเภทงานซ่อม (ครุภัณฑ์)</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" data-name="btn_rpt_technician_by_service_type_other"><i class="icon-print"></i> สถิติการซ่อมของช่างแยกตามประเภทงานซ่อม (ทั่วไป)</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" data-name="btn_rpt_by_place"><i class="icon-print"></i> สถิติการส่งซ่อม (แยกตามสถานที่ส่งซ่อม)</a>
+                            </li>
+                        </ul>
+                    </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="icon-folder-open"></i> ข้อมูลพื้นฐาน
@@ -175,7 +191,140 @@
     </div>
 </div>
 
+<!-- report by technician and service type -->
+   <div class="modal hide fade" id="mdl_rpt_service_type">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3>สถิติการให้บริการแยกตามประเภทงาน (ครุภัณฑ์)</h3>
+        </div>
+        <div class="modal-body">
+            <form class="form-inline well">
+
+                <label for="sl_rpt_by_service_type_user">ชื่อผู้ใช้งาน</label>
+                <select id="sl_rpt_by_service_type_user">
+                    <option value="">---</option>
+	                    <?php
+                        $users = get_technician_list();
+
+                        foreach($users as $u){
+                            echo '<option value="'.$u->id.'">'.$u->fullname.'</option>';
+                        }
+                        ?>
+                </select>
+
+                <label for="txt_discharge_date">ตั้งแต่</label>
+                <div class="input-append date" data-name="datepicker">
+             		<input class="input-small" id="txt_rpt_by_service_type_date_s" size="16" type="text" disabled>
+           			<span class="add-on"><i class="icon-th"></i></span>
+        		</div>
+            	<label for="txt_discharge_date">ถึง</label>
+                <div class="input-append date" data-name="datepicker">
+					<input class="input-small" id="txt_rpt_by_service_type_date_e" size="16" type="text" disabled>
+   					<span class="add-on"><i class="icon-th"></i></span>
+				</div>
+            	<a href="javascript:void(0);" class="btn btn-info" id="btn_rpt_do_by_service_type"><i class="icon-search icon-white"></i> แสดงรายงาน</a>
+            </form>
+
+            <table class="table table-striped" id="tbl_rpt_by_service_type">
+            <thead>
+            	<tr>
+            		<th>ประเภทงาน</th>
+            		<th>จำนวน</th>
+            	</tr>
+            </thead>
+            <tbody></tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btn-danger" data-dismiss="modal"><i class="icon-off icon-white"></i> ปิดหน้าต่าง</a>
+        </div>
+   </div>
+
+   	<div class="modal hide fade" id="mdl_rpt_service_type_other">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3>สถิติการให้บริการแยกตามประเภทงาน (ทั่วไป)</h3>
+        </div>
+        <div class="modal-body">
+            <form class="form-inline well">
+
+                <label for="sl_rpt_by_service_type_user_other">ชื่อผู้ใช้งาน</label>
+                <select id="sl_rpt_by_service_type_user_other">
+                    <option value="">---</option>
+	                    <?php
+                        $users = get_technician_list();
+
+                        foreach($users as $u){
+                            echo '<option value="'.$u->id.'">'.$u->fullname.'</option>';
+                        }
+                        ?>
+                </select>
+
+                <label for="txt_discharge_date">ตั้งแต่</label>
+                <div class="input-append date" data-name="datepicker">
+             		<input class="input-small" id="txt_rpt_by_service_type_date_s_other" size="16" type="text" disabled>
+           			<span class="add-on"><i class="icon-th"></i></span>
+        		</div>
+            	<label for="txt_discharge_date">ถึง</label>
+                <div class="input-append date" data-name="datepicker">
+					<input class="input-small" id="txt_rpt_by_service_type_date_e_other" size="16" type="text" disabled>
+   					<span class="add-on"><i class="icon-th"></i></span>
+				</div>
+            	<a href="javascript:void(0);" class="btn btn-info" id="btn_rpt_do_by_service_type_other"><i class="icon-search icon-white"></i> แสดงรายงาน</a>
+            </form>
+
+            <table class="table table-striped" id="tbl_rpt_by_service_type_other">
+            <thead>
+            	<tr>
+            		<th>ประเภทงาน</th>
+            		<th>จำนวน</th>
+            	</tr>
+            </thead>
+            <tbody></tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btn-danger" data-dismiss="modal"><i class="icon-off icon-white"></i> ปิดหน้าต่าง</a>
+        </div>
+   </div>
+
+   	<div class="modal hide fade" id="mdl_rpt_by_place">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3>สถิติการส่งซ่อมแยกตามสถานที่ส่ง</h3>
+        </div>
+        <div class="modal-body">
+            <form class="form-inline well">
+                <label for="txt_discharge_date">ตั้งแต่</label>
+                <div class="input-append date" data-name="datepicker">
+             		<input class="input-small" id="txt_rpt_by_place_date_s" size="16" type="text" disabled>
+           			<span class="add-on"><i class="icon-th"></i></span>
+        		</div>
+            	<label for="txt_discharge_date">ถึง</label>
+                <div class="input-append date" data-name="datepicker">
+					<input class="input-small" id="txt_rpt_by_place_date_e" size="16" type="text" disabled>
+   					<span class="add-on"><i class="icon-th"></i></span>
+				</div>
+            	<a href="javascript:void(0);" class="btn btn-info" id="btn_rpt_do_by_place"><i class="icon-search icon-white"></i> แสดงรายงาน</a>
+            </form>
+
+            <table class="table table-striped" id="tbl_rpt_by_place">
+            <thead>
+            	<tr>
+            		<th>สถานที่ส่งซ่อม</th>
+            		<th>จำนวน</th>
+            	</tr>
+            </thead>
+            <tbody></tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btn-danger" data-dismiss="modal"><i class="icon-off icon-white"></i> ปิดหน้าต่าง</a>
+        </div>
+   </div>
+
 <script type="text/javascript" src="<?php echo base_url(); ?>assets/apps/index.js"></script>
+<script type="text/javascript" src="<?php echo base_url(); ?>assets/apps/reports.main.js"></script>
 
 </body>
 </html>

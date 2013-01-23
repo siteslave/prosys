@@ -4,6 +4,12 @@ var addCommas = function (str){
     return my_str;
 };
 
+var addCommasNoDecimal = function (str){
+    var my_str = numeral(str).format('0,0');
+
+    return my_str;
+};
+
 var clear_null = function(s){
     return s == null ? '<i class="icon-minus"></i>' : s;
 };
@@ -151,11 +157,14 @@ App.record_perpage = 15;
 
 $(function(){
     // Setting datepicker
+    $('div[data-name="datepicker"]').datepicker({
+        language: 'th'
+        , format: 'dd/mm/yyyy'
+    });
     $('div#datepicker').datepicker({
         language: 'th'
         , format: 'dd/mm/yyyy'
     });
-
     $('input[data-type="number"]').numeric();
     $('input[disabled]').css('background-color', 'white');
     $('textarea[disabled]').css('background-color', 'white');

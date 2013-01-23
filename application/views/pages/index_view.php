@@ -29,13 +29,14 @@
                 <th>ชื่อช่าง</th>
                 <th>ซ่อมครุภัณฑ์</th>
                 <th>ซ่อมทั่วไป</th>
+                <th>ซ่อมร่วม</th>
                 <th>รวม</th>
             </tr>
         </thead>
         <tbody></tbody>
     </table>
   </div>
-  
+
   <div class="span6">
     <legend>สถานะรับซ่อม</legend>
         <form action="#" class="form-actions form-inline">
@@ -66,9 +67,9 @@
         </thead>
         <tbody></tbody>
     </table>
-    
+
     <div id="div_chart" style="height: 280px;">
-      
+
     </div>
   </div>
 </div>

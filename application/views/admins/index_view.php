@@ -26,6 +26,10 @@
                 <tbody></tbody>
             </table>
 
+            <div id="main_paging" class="pagination">
+                <ul></ul>
+            </div>
+
             <a href="javascript:void(0);" class="btn btn-success" id="btn_new"><i class="icon-plus-sign icon-white"></i> เพิ่มผู้ใช้งาน</a>
 
         </div>

@@ -497,10 +497,12 @@ $(function(){
         params.owner_id = $('#sl_owners').val();
         params.type_id = $('#sl_new_type').val();
         params.supplier_id = $('#sl_new_supplier').val();
-
+        /*
         if(!params.code){
             App.alert('กรุณาระบุเลขที่ครุภัณฑ์');
-        }else if(!params.name){
+        }else
+        */ 
+        if(!params.name){
             App.alert('กรุณาระบุชื่อ ครุภัณฑ์');
         }else{
             //update product

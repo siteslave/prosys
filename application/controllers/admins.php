@@ -9,11 +9,11 @@ class Admins extends CI_Controller
         $username = $this->session->userdata('username');
 
         if(empty($username)) redirect(site_url('users/login'));
-        
+
         $user_type = $this->session->userdata('user_type');
-        
+
         if($user_type != '3') redirect(site_url('errors/access_denied'));
-        
+
 
         $this->load->model('Admin_model', 'admin');
     }
@@ -26,7 +26,16 @@ class Admins extends CI_Controller
     }
 
     public function get_list(){
-        $rs = $this->admin->get_list();
+
+    	$start = $this->input->post('start');
+    	$stop = $this->input->post('stop');
+
+    	$start = empty($start) ? 0 : $start;
+    	$stop = empty($stop) ? 25 : $stop;
+
+    	$limit = (int) $stop - (int) $start;
+
+        $rs = $this->admin->get_list($start, $limit);
         if($rs){
             $rows = json_encode($rs);
             $json = '{"success": true, "rows": '.$rows.'}';
@@ -121,5 +130,12 @@ class Admins extends CI_Controller
         }
 
         render_json($json);
+    }
+
+    public function get_list_total(){
+    	$total = $this->admin->get_list_total();
+    	$json = '{"success": true, "total": '.$total.'}';
+
+    	render_json($json);
     }
 }

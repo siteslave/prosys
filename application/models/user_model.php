@@ -11,7 +11,7 @@ class User_model extends CI_Model
                             ->count_all_results('users');
         return $result > 0 ? TRUE : FALSE;
     }
-    
+
     public function check_login_technician($user_id, $password)
     {
         $result = $this->db->where('id', $user_id)
@@ -26,11 +26,18 @@ class User_model extends CI_Model
                         ->update('users');
         return $rs;
     }
-    
+
     public function get_technician_list(){
     	$rs = $this->db->where_in('user_type', array('2', '3'))
     					->get('users')
 		    			->result();
 		return $rs;
+    }
+
+    public function get_admin_list(){
+    	$rs = $this->db->where_in('user_type', array('3'))
+    	->get('users')
+    	->result();
+    	return $rs;
     }
 }

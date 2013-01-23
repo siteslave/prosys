@@ -59,13 +59,14 @@ $(function(){
                );
            }else{
                _.each(data.rows, function(v){
-                   var total = v.total_m + v.total_o;
+                   var total = v.total_m + v.total_o + v.total_more;
 
                   $('#tbl_tech_service_count > tbody').append(
                        '<tr>' +
                        '<td>'+ v.fullname +' [ '+ v.username +' ] </td>' +
                        '<td>'+ v.total_m +'</td>' +
                        '<td>'+ v.total_o +'</td>' +
+                       '<td>'+ v.total_more +'</td>' +
                        '<td>'+ total +'</td>' +
                        '</tr>'
                    );
@@ -87,13 +88,14 @@ $(function(){
                );
            }else{
                _.each(data.rows, function(v){
-                   var total = v.total_m + v.total_o;
+                   var total = v.total_m + v.total_o + v.total_more;
 
                   $('#tbl_tech_service_count > tbody').append(
                        '<tr>' +
                        '<td>'+ v.fullname +' [ '+ v.username +' ] </td>' +
                        '<td>'+ v.total_m +'</td>' +
                        '<td>'+ v.total_o +'</td>' +
+                       '<td>'+ v.total_more +'</td>' +
                        '<td>'+ total +'</td>' +
                        '</tr>'
                    );

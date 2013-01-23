@@ -49,6 +49,7 @@
                     <th>รายการ</th>
                     <th>หน่วยงาน</th>
                     <th>อาการแจ้ง</th>
+                    <th>ประเภท</th>
                     <th>เจ้าหน้าที่รับผิดชอบ</th>
                     <th>สถานะ</th>
                     <th>#</th>
@@ -56,6 +57,7 @@
                 </thead>
                 <tbody>
                 <tr>
+                    <td>...</td>
                     <td>...</td>
                     <td>...</td>
                     <td>...</td>
@@ -112,6 +114,7 @@
                     <th>หน่วยงาน</th>
                     <th>รายการ</th>
                     <th>อาการแจ้ง</th>
+                    <th>ประเภท</th>
                    <th>เจ้าหน้าที่รับผิดชอบ</th>
                     <th>สถานะ</th>
                     <th>#</th>
@@ -119,6 +122,7 @@
                 </thead>
                 <tbody>
                 <tr>
+                	<td>...</td>
                     <td>...</td>
                     <td>...</td>
                     <td>...</td>
@@ -175,7 +179,7 @@
                         <select id="sl_regcode_status_user">
 	                        <?php
 	                        $users = get_technician_list();
-	
+
 	                            foreach($users as $u){
 	                                echo '<option value="'.$u->id.'">'.$u->fullname.'</option>';
 	                            }
@@ -183,7 +187,7 @@
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="control-group">
                     <label class="control-label" for="txt_regcode_status_password">รหัสผ่าน</label>
                     <div class="controls">
@@ -236,7 +240,7 @@
                         	<option value="">---</option>
 	                        <?php
 	                        $users = get_technician_list();
-	
+
 	                            foreach($users as $u){
 	                                echo '<option value="'.$u->id.'">'.$u->fullname.'</option>';
 	                            }
@@ -244,7 +248,7 @@
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="control-group">
                     <label class="control-label" for="txt_other_status_password">รหัสผ่าน</label>
                     <div class="controls">
@@ -282,7 +286,7 @@
                         	<option value="">---</option>
 	                        <?php
 	                        $users = get_technician_list();
-	
+
 	                            foreach($users as $u){
 	                                echo '<option value="'.$u->id.'">'.$u->fullname.'</option>';
 	                            }
@@ -290,7 +294,7 @@
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="control-group">
                     <label class="control-label" for="txt_regcode_assign_tech_password">รหัสผ่าน</label>
                     <div class="controls">
@@ -321,7 +325,7 @@
                         <input type="text" id="txt_other_assign_tech_service_code" class="uneditable-input" disabled="disabled">
                     </div>
                 </div>
-                
+
                 <legend>ยืนยัน (Confirmation)</legend>
                 <div class="control-group">
                     <label class="control-label" for="sl_other_assign_tech_user">ชื่อผู้ใช้งาน</label>
@@ -330,7 +334,7 @@
                         	<option value="">---</option>
 	                        <?php
 	                        $users = get_technician_list();
-	
+
 	                            foreach($users as $u){
 	                                echo '<option value="'.$u->id.'">'.$u->fullname.'</option>';
 	                            }
@@ -338,7 +342,7 @@
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="control-group">
                     <label class="control-label" for="sl_regcode_service_status">รหัสผ่าน</label>
                     <div class="controls">
@@ -377,13 +381,6 @@
                         <textarea class="input-xxlarge" rows="4" id="txt_result"></textarea>
                     </div>
                 </div>
-                
-                 <div class="control-group">
-                    <label class="control-label" for="txt_result">จำหน่าย</label>
-                    <div class="controls">
-                        <input type="checkbox" id="chk_result_discharge">
-                    </div>
-                </div>
 				<legend>ยืนยัน (Confirmation)</legend>
 				<div class="control-group">
                     <label class="control-label" for="sl_result_user">ชื่อผู้ใช้งาน</label>
@@ -392,7 +389,7 @@
                         	<option value="">---</option>
 	                        <?php
 	                        $users = get_technician_list();
-	
+
 	                            foreach($users as $u){
 	                                echo '<option value="'.$u->id.'">'.$u->fullname.'</option>';
 	                            }
@@ -400,7 +397,7 @@
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="control-group">
                     <label class="control-label" for="txt_result_password">รหัสผ่าน</label>
                     <div class="controls">
@@ -413,6 +410,262 @@
             <a href="#" class="btn btn-success" id="btn_do_result"><i class="icon-share icon-white"></i> บันทึกข้อมูล</a>
             <a href="#" class="btn btn-danger" data-dismiss="modal"><i class="icon-off icon-white"></i> ปิดหน้าต่าง</a>
         </div>
-    <!-- end s
-    </div>ave result code -->
+   </div>
+    <!-- end save result code -->
+
+    <div class="modal hide fade" id="mdl_discharge">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3>บันทึกการจำหน่าย</h3>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <input type="hidden" id="txt_result_type" />
+                <input type="hidden" id="txt_result_id" />
+                <div class="control-group">
+                    <label class="control-label" for="txt_discharge_service_code">เลขที่ใบแจ้งซ่อม</label>
+                    <div class="controls">
+                        <input type="text" id="txt_discharge_service_code" class="uneditable-input" disabled="disabled">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="txt_discharge_date">วันที่จำหน่าย</label>
+                    <div class="controls">
+                        <div class="input-append date" data-name="datepicker">
+                       		<input class="input-small" id="txt_discharge_date" size="16" type="text" disabled>
+                        	<span class="add-on"><i class="icon-th"></i></span>
+                  		</div>
+                    </div>
+                </div>
+				<legend>ยืนยัน (Confirmation)</legend>
+				<div class="control-group">
+                    <label class="control-label" for="sl_discharge_user">ชื่อผู้ใช้งาน</label>
+                    <div class="controls">
+                        <select id="sl_discharge_user">
+                        	<option value="">---</option>
+	                        <?php
+	                        $users = get_technician_list();
+
+	                            foreach($users as $u){
+	                                echo '<option value="'.$u->id.'">'.$u->fullname.'</option>';
+	                            }
+	                        ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="txt_discharge_password">รหัสผ่าน</label>
+                    <div class="controls">
+                        <input type="password" id="txt_discharge_password">
+                    </div>
+            	</div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btn-success" id="btn_do_discharge"><i class="icon-share icon-white"></i> บันทึกข้อมูล</a>
+            <a href="#" class="btn btn-danger" data-dismiss="modal"><i class="icon-off icon-white"></i> ปิดหน้าต่าง</a>
+        </div>
+   </div>
+
+   <div class="modal hide fade" id="mdl_service_type">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3>กำหนดประเภทงาน (ครุภัณฑ์)</h3>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <div class="control-group">
+                    <label class="control-label" for="txt_type_service_code">เลขที่ใบแจ้งซ่อม</label>
+                    <div class="controls">
+                        <input type="text" id="txt_type_service_code" class="uneditable-input" disabled="disabled">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="sl_type">ประเภทงานซ่อม</label>
+                    <div class="controls">
+                        <select id="sl_type">
+                        	<option value="">---</option>
+	                        <?php
+	                        $rs = get_service_type_list();
+
+	                            foreach($rs as $r){
+	                                echo '<option value="'.$r->id.'">'.$r->name.'</option>';
+	                            }
+	                        ?>
+                        </select>
+                    </div>
+                </div>
+				<legend>ยืนยัน (Confirmation)</legend>
+				<div class="control-group">
+                    <label class="control-label" for="sl_type_user">ชื่อผู้ใช้งาน</label>
+                    <div class="controls">
+                        <select id="sl_type_user">
+                        	<option value="">---</option>
+	                        <?php
+	                        $users = get_admin_list();
+
+	                            foreach($users as $u){
+	                                echo '<option value="'.$u->id.'">'.$u->fullname.'</option>';
+	                            }
+	                        ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="txt_type_password">รหัสผ่าน</label>
+                    <div class="controls">
+                        <input type="password" id="txt_type_password">
+                    </div>
+            	</div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btn-success" id="btn_do_main_type"><i class="icon-share icon-white"></i> บันทึกข้อมูล</a>
+            <a href="#" class="btn btn-danger" data-dismiss="modal"><i class="icon-off icon-white"></i> ปิดหน้าต่าง</a>
+        </div>
+   </div>
+
+   <div class="modal hide fade" id="mdl_service_type_other">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3>กำหนดประเภทงาน (ทั่วไป)</h3>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <div class="control-group">
+                    <label class="control-label" for="txt_type_service_code_other">เลขที่ใบแจ้งซ่อม</label>
+                    <div class="controls">
+                        <input type="text" id="txt_type_service_code_other" class="uneditable-input" disabled="disabled">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="sl_type_other">ประเภทงานซ่อม</label>
+                    <div class="controls">
+                        <select id="sl_type_other">
+                        	<option value="">---</option>
+	                        <?php
+	                        $rs = get_service_type_list();
+
+	                            foreach($rs as $r){
+	                                echo '<option value="'.$r->id.'">'.$r->name.'</option>';
+	                            }
+	                        ?>
+                        </select>
+                    </div>
+                </div>
+				<legend>ยืนยัน (Confirmation)</legend>
+				<div class="control-group">
+                    <label class="control-label" for="sl_type_user_other">ชื่อผู้ใช้งาน</label>
+                    <div class="controls">
+                        <select id="sl_type_user_other">
+                        	<option value="">---</option>
+	                        <?php
+	                        $users = get_admin_list();
+
+	                            foreach($users as $u){
+	                                echo '<option value="'.$u->id.'">'.$u->fullname.'</option>';
+	                            }
+	                        ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="txt_type_password_other">รหัสผ่าน</label>
+                    <div class="controls">
+                        <input type="password" id="txt_type_password_other">
+                    </div>
+            	</div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btn-success" id="btn_do_other_type"><i class="icon-share icon-white"></i> บันทึกข้อมูล</a>
+            <a href="#" class="btn btn-danger" data-dismiss="modal"><i class="icon-off icon-white"></i> ปิดหน้าต่าง</a>
+        </div>
+   </div>
+
+   <div class="modal hide fade" id="mdl_assign_more_technician">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3>กำหนดช่างเพิ่มเติม</h3>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <div class="control-group">
+                    <label class="control-label" for="txt_mot_service_code">เลขที่ใบแจ้งซ่อม</label>
+                    <div class="controls">
+                        <input type="text" id="txt_mot_service_code" class="uneditable-input" disabled="disabled">
+                    </div>
+                </div>
+				<div class="control-group">
+                    <label class="control-label" for="sl_mot_technician">ชื่อผู้ใช้งาน</label>
+                    <div class="controls">
+                        <select id="sl_mot_technician">
+                        	<option value="">---</option>
+	                        <?php
+	                        $users = get_technician_list();
+
+	                            foreach($users as $u){
+	                                echo '<option value="'.$u->id.'">'.$u->fullname.'</option>';
+	                            }
+	                        ?>
+                        </select>
+                    </div>
+                </div>
+
+				<legend>ยืนยัน (Confirmation)</legend>
+				<div class="control-group">
+                    <label class="control-label" for="sl_mot_user">ชื่อผู้ใช้งาน</label>
+                    <div class="controls">
+                        <select id="sl_mot_user">
+                        	<option value="">---</option>
+	                        <?php
+	                        $users = get_admin_list();
+
+	                            foreach($users as $u){
+	                                echo '<option value="'.$u->id.'">'.$u->fullname.'</option>';
+	                            }
+	                        ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="txt_mot_password">รหัสผ่าน</label>
+                    <div class="controls">
+                        <input type="password" id="txt_mot_password">
+                    </div>
+            	</div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btn-success" id="btn_do_mot"><i class="icon-share icon-white"></i> บันทึกข้อมูล</a>
+            <a href="#" class="btn btn-danger" data-dismiss="modal"><i class="icon-off icon-white"></i> ปิดหน้าต่าง</a>
+        </div>
+   </div>
+   <div class="modal hide fade" id="mdl_show_more_technician">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3>รายการช่างเพิ่มเติม</h3>
+        </div>
+        <div class="modal-body">
+            <table class="table table-striped" id="tbl_more_technician_list">
+            	<thead>
+            	<tr>
+            		<th>รหัสผู้ใช้งาน</th>
+            		<th>ชื่อช่างผู้ปฏิบัติงาน</th>
+            	</tr>
+            	</thead>
+            	<tbody></tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btn-danger" data-dismiss="modal"><i class="icon-off icon-white"></i> ปิดหน้าต่าง</a>
+        </div>
+   </div>
 <script type="text/javascript" src="<?php echo base_url(); ?>assets/apps/services.js"></script>

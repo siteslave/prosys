@@ -103,6 +103,7 @@ $(function(){
         items.name = $.trim($('#txt_name').val());
         items.id = $('#txt_id').val();
         items.old_name = $('#txt_old_name').val();
+        items.palce = $('#sl_new_send_place').val();
 
         if(!items.name){
             App.alert('กรุณาระบุชื่อ');

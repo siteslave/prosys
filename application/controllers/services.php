@@ -27,10 +27,10 @@ class Services extends CI_Controller
 		$username = $this->input->post('username');
         $password = $this->input->post('password');
         $validated = $this->user->do_login($username, $password);
-        
+
         //if($validate)
 	}
-	
+
     public function get_service_by_code_list(){
 
         $start = $this->input->post('start');
@@ -64,6 +64,7 @@ class Services extends CI_Controller
                 $obj->tech_user_id = empty($r->tech_user_id) ? '' : $r->tech_user_id;
                 $obj->tech_name = empty($r->tech_name) ? '-' : $r->tech_name;
                 $obj->owner_name = $r->owner_name;
+                $obj->service_type = get_type_name($r->service_type_id);
 
                 array_push($arr_result, $obj);
             }
@@ -95,32 +96,40 @@ class Services extends CI_Controller
 
     public function save_regcode_change_status(){
         $data = $this->input->post('data');
-		
+
         if(!empty($data)){
-        	//check user
-        	$validated = $this->user->check_login_technician($data['user_id'], $data['password']);
-        	
-        	if($validated){
-        		if(empty($data['sv'])){
-		            $json = '{"success": false, "msg": "No service code found."}';
-		        }else if(empty($data['status'])){
-		            $json = '{"success": false, "msg": "No service status found."}';
-		        }else{
-		            //check password
-		            $rs = $this->service->change_service_status($data['sv'], $data['status']);
-		            if($rs){
-		                $this->service->user_id = $data['user_id'];
-		                $detail = 'เปลี่ยนสถานะซ่อม -> ' . get_status_name($data['status']);
-		                $this->service->save_activities($data['sv'], $detail);
-		
-		                $json = '{"success": true}';
-		            }else{
-		                $json = '{"success": false, "msg": "Can\'t change status, please check your data and try again."}';
-		            }
-		        }
+
+        	//check discharge status
+        	$discharged = $this->service->check_discharge_status($data['sv']);
+        	if($discharged){
+        		$json = '{"success": false, "msg": "รายการนี้ถูกจำหน่ายแล้วไม่สามารถแก้ไขรายการได้"}';
         	}else{
-        		$json = '{"success": false, "msg": "Invalid username/password."}';
+        		//check user
+        		$validated = $this->user->check_login_technician($data['user_id'], $data['password']);
+
+        		if($validated){
+        			if(empty($data['sv'])){
+        				$json = '{"success": false, "msg": "No service code found."}';
+        			}else if(empty($data['status'])){
+        				$json = '{"success": false, "msg": "No service status found."}';
+        			}else{
+        				//check password
+        				$rs = $this->service->change_service_status($data['sv'], $data['status']);
+        				if($rs){
+        					$this->service->user_id = $data['user_id'];
+        					$detail = 'เปลี่ยนสถานะซ่อม -> ' . get_status_name($data['status']);
+        					$this->service->save_activities($data['sv'], $detail);
+
+        					$json = '{"success": true}';
+        				}else{
+        					$json = '{"success": false, "msg": "Can\'t change status, please check your data and try again."}';
+        				}
+        			}
+        		}else{
+        			$json = '{"success": false, "msg": "Invalid username/password."}';
+        		}
         	}
+
         }else{
         	$json = '{"success": fale, "msg": "No data found."}';
         }
@@ -130,32 +139,39 @@ class Services extends CI_Controller
 
     public function save_other_change_status(){
         $data = $this->input->post('data');
-		
+
         if(!empty($data)){
-        	//check user
-        	$validated = $this->user->check_login_technician($data['user_id'], $data['password']);
-        	
-        	if($validated){
-        		if(empty($data['sv'])){
-		            $json = '{"success": false, "msg": "No service code found."}';
-		        }else if(empty($data['status'])){
-		            $json = '{"success": false, "msg": "No service status found."}';
-		        }else{
-		            //check password
-		            $rs = $this->service->change_service_status_other($data['sv'], $data['status']);
-		            if($rs){
-		                $this->service->user_id = $data['user_id'];
-		                $detail = 'เปลี่ยนสถานะซ่อม -> ' . get_status_name($data['status']);
-		                $this->service->save_activities($data['sv'], $detail);
-		
-		                $json = '{"success": true}';
-		            }else{
-		                $json = '{"success": false, "msg": "Can\'t change status, please check your data and try again."}';
-		            }
-		        }
+        	//check discharge status
+        	$discharged = $this->service->check_discharge_status($data['sv']);
+        	if($discharged){
+        		$json = '{"success": false, "msg": "รายการนี้ถูกจำหน่ายแล้วไม่สามารถแก้ไขรายการได้"}';
         	}else{
-        		$json = '{"success": false, "msg": "Invalid username/password."}';
+        		//check user
+        		$validated = $this->user->check_login_technician($data['user_id'], $data['password']);
+
+        		if($validated){
+        			if(empty($data['sv'])){
+        				$json = '{"success": false, "msg": "No service code found."}';
+        			}else if(empty($data['status'])){
+        				$json = '{"success": false, "msg": "No service status found."}';
+        			}else{
+        				//check password
+        				$rs = $this->service->change_service_status_other($data['sv'], $data['status']);
+        				if($rs){
+        					$this->service->user_id = $data['user_id'];
+        					$detail = 'เปลี่ยนสถานะซ่อม -> ' . get_status_name($data['status']);
+        					$this->service->save_activities($data['sv'], $detail);
+
+        					$json = '{"success": true}';
+        				}else{
+        					$json = '{"success": false, "msg": "Can\'t change status, please check your data and try again."}';
+        				}
+        			}
+        		}else{
+        			$json = '{"success": false, "msg": "Invalid username/password."}';
+        		}
         	}
+
         }else{
         	$json = '{"success": fale, "msg": "No data found."}';
         }
@@ -164,29 +180,36 @@ class Services extends CI_Controller
     }
     public function save_regcode_assign_tech(){
         $data = $this->input->post('data');
-        
+
 		if(!empty($data)){
-        	//check user
-        	$validated = $this->user->check_login_technician($data['user_id'], $data['password']);
-        	
-        	if($validated){
-        		if(empty($data['sv'])){
-		            $json = '{"success": false, "msg": "No service code found."}';
-		        }else{
-		            $rs = $this->service->save_regcode_assign_tech($data['sv'], $data['user_id']);
-		            if($rs){
-		                $this->service->user_id = $data['user_id'];
-		                $detail = 'กำหนดช่างผู้รับผิดชอบ -> ' . get_user_fullname_by_id($data['user_id']);
-                		$this->service->save_activities($data['sv'], $detail);
-		
-		                $json = '{"success": true}';
-		            }else{
-		                $json = '{"success": false, "msg": "Can\'t change status, please check your data and try again."}';
-		            }
-		        }
-        	}else{
-        		$json = '{"success": false, "msg": "Invalid username/password."}';
-        	}
+			//check discharge status
+			$discharged = $this->service->check_discharge_status($data['sv']);
+			if($discharged){
+				$json = '{"success": false, "msg": "รายการนี้ถูกจำหน่ายแล้วไม่สามารถแก้ไขรายการได้"}';
+			}else{
+				//check user
+				$validated = $this->user->check_login_technician($data['user_id'], $data['password']);
+
+				if($validated){
+					if(empty($data['sv'])){
+						$json = '{"success": false, "msg": "No service code found."}';
+					}else{
+						$rs = $this->service->save_regcode_assign_tech($data['sv'], $data['user_id']);
+						if($rs){
+							$this->service->user_id = $data['user_id'];
+							$detail = 'กำหนดช่างผู้รับผิดชอบ -> ' . get_user_fullname_by_id($data['user_id']);
+							$this->service->save_activities($data['sv'], $detail);
+
+							$json = '{"success": true}';
+						}else{
+							$json = '{"success": false, "msg": "Can\'t change status, please check your data and try again."}';
+						}
+					}
+				}else{
+					$json = '{"success": false, "msg": "Invalid username/password."}';
+				}
+			}
+
         }else{
         	$json = '{"success": fale, "msg": "No data found."}';
         }
@@ -195,33 +218,40 @@ class Services extends CI_Controller
     }
     public function save_other_assign_tech(){
     	$data = $this->input->post('data');
-        
+
 		if(!empty($data)){
-        	//check user
-        	$validated = $this->user->check_login_technician($data['user_id'], $data['password']);
-        	
-        	if($validated){
-        		if(empty($data['sv'])){
-		            $json = '{"success": false, "msg": "No service code found."}';
-		        }else{
-		            $rs = $this->service->save_other_assign_tech($data['sv'], $data['user_id']);
-		            if($rs){
-		                $this->service->user_id = $data['user_id'];
-		                $detail = 'กำหนดช่างผู้รับผิดชอบ -> ' . get_user_fullname_by_id($data['user_id']);
-                		$this->service->save_activities($data['sv'], $detail);
-		
-		                $json = '{"success": true}';
-		            }else{
-		                $json = '{"success": false, "msg": "Can\'t change status, please check your data and try again."}';
-		            }
-		        }
-        	}else{
-        		$json = '{"success": false, "msg": "Invalid username/password."}';
-        	}
+			//check discharge status
+			$discharged = $this->service->check_discharge_status($data['sv']);
+			if($discharged){
+				$json = '{"success": false, "msg": "รายการนี้ถูกจำหน่ายแล้วไม่สามารถแก้ไขรายการได้"}';
+			}else{
+				//check user
+				$validated = $this->user->check_login_technician($data['user_id'], $data['password']);
+
+				if($validated){
+					if(empty($data['sv'])){
+						$json = '{"success": false, "msg": "No service code found."}';
+					}else{
+						$rs = $this->service->save_other_assign_tech($data['sv'], $data['user_id']);
+						if($rs){
+							$this->service->user_id = $data['user_id'];
+							$detail = 'กำหนดช่างผู้รับผิดชอบ -> ' . get_user_fullname_by_id($data['user_id']);
+							$this->service->save_activities($data['sv'], $detail);
+
+							$json = '{"success": true}';
+						}else{
+							$json = '{"success": false, "msg": "Can\'t change status, please check your data and try again."}';
+						}
+					}
+				}else{
+					$json = '{"success": false, "msg": "Invalid username/password."}';
+				}
+			}
+
         }else{
         	$json = '{"success": fale, "msg": "No data found."}';
         }
-    	
+
         render_json($json);
     }
     public function entries($id){
@@ -241,6 +271,7 @@ class Services extends CI_Controller
                 $data['product_name'] = $rs->product_name;
                 $data['owner_name'] = $rs->owner_name;
                 $data['request_name'] = $rs->request_name;
+                $data['service_type'] = get_type_name($rs->service_type_id);
 
                 $this->layout->view('services/entries_view', $data);
             }else{
@@ -264,6 +295,7 @@ class Services extends CI_Controller
                 $data['product_name'] = $rs->product_name;
                 $data['owner_name'] = $rs->owner_name;
                 $data['request_name'] = $rs->request_name;
+                $data['service_type'] = get_type_name($rs->service_type_id);
 
                 $this->layout->view('services/entries_other_view', $data);
             }else{
@@ -273,20 +305,30 @@ class Services extends CI_Controller
     }
 
     public function save_activities(){
-        $sv = $this->input->post('sv');
-        $detail = $this->input->post('detail');
-        if(empty($sv)){
-            $json = '{"success": false, "msg": "No service id found."}';
-        }else if(empty($detail)){
-            $json = '{"success": false, "msg": "No detail for save"}';
+        $data = $this->input->post('data');
+        if(empty($data)){
+            $json = '{"success": false, "msg": "No data found."}';
         }else{
-            $this->service->user_id = $this->user_id;
-            $rs = $this->service->save_activities($sv, $detail);
-            if($rs){
-                $json = '{"success": true}';
-            }else{
-                $json = '{"success": false, "msg": "Can\'t save activities, please check your data and try again."}';
-            }
+        	//check discharge status
+        	$discharged = $this->service->check_discharge_status($data['sv']);
+        	if($discharged){
+        		$json = '{"success": false, "msg": "รายการนี้ถูกจำหน่ายแล้วไม่สามารถแก้ไขรายการได้"}';
+        	}else{
+        		$validated = $this->user->check_login_technician($data['user_id'], $data['password']);
+        		if($validated){
+        			$this->service->user_id = $this->user_id;
+        			$rs = $this->service->save_activities($data['sv'], $data['detail']);
+        			if($rs){
+        				$json = '{"success": true}';
+        			}else{
+        				$json = '{"success": false, "msg": "Can\'t save activities, please check your data and try again."}';
+        			}
+        		}else{
+        			$json = '{"success": false, "msg": "ชื่อผู้ใช้งาน หรือรหัสผ่านไม่ถูกต้อง"}';
+        		}
+
+        	}
+
         }
 
         render_json($json);
@@ -332,25 +374,30 @@ class Services extends CI_Controller
         if(empty($data)){
             $json = '{"success": false, "msg": "No data for save."}';
         }else{
-            if($data['isupdate'] == '1'){
-                 //update
-                 $id = get_service_item_id($data['id']);
-                 $detail = 'แก้ไขค่าใช้จ่าย --> ' . get_item_name($id) . ', จำนวน ' . $data['qty'] . ', ราคา ' . $data['price'] . ' บาท';
-                $rs = $this->service->update_item($data);
-            }else{
-                $id = (int) $data['id'];
-                $detail = 'เพิ่มค่าใช้จ่าย --> ' . get_item_name($id) . ', จำนวน ' . $data['qty'] . ', ราคา ' . $data['price'] . ' บาท';
-                $rs = $this->service->save_item($data);
-            }
+        	//check discharge status
+        	$discharged = $this->service->check_discharge_status($data['sv']);
+        	if($discharged){
+        		$json = '{"success": false, "msg": "รายการนี้ถูกจำหน่ายแล้วไม่สามารถแก้ไขรายการได้"}';
+        	}else{
+        		if($data['isupdate'] == '1'){
+        			//update
+        			$id = get_service_item_id($data['id']);
+        			$detail = 'แก้ไขค่าใช้จ่าย --> ' . get_item_name($id) . ', จำนวน ' . $data['qty'] . ', ราคา ' . $data['price'] . ' บาท';
+        			$rs = $this->service->update_item($data);
+        		}else{
+        			$id = (int) $data['id'];
+        			$detail = 'เพิ่มค่าใช้จ่าย --> ' . get_item_name($id) . ', จำนวน ' . $data['qty'] . ', ราคา ' . $data['price'] . ' บาท';
+        			$rs = $this->service->save_item($data);
+        		}
 
-            if($rs){
-                $this->service->user_id = $this->user_id;
-                $rs = $this->service->save_activities($data['sv'], $detail);
-                $json = '{"success": true}';
-            }else{
-                $json = '{"success": false, "msg": "Save/update data error."}';
-            }
-
+        		if($rs){
+        			$this->service->user_id = $this->user_id;
+        			$rs = $this->service->save_activities($data['sv'], $detail);
+        			$json = '{"success": true}';
+        		}else{
+        			$json = '{"success": false, "msg": "Save/update data error."}';
+        		}
+        	}
         }
 
         render_json($json);
@@ -378,18 +425,24 @@ class Services extends CI_Controller
         if(empty($id)){
             $json = '{"success": false, "msg": "No ID found."}';
         }else{
-            $item_id = get_service_item_id($id);
-            $rs = $this->service->remove_item($id);
-            if($rs){
+        	//check discharge status
+        	$discharged = $this->service->check_discharge_status($sv);
+        	if($discharged){
+        		$json = '{"success": false, "msg": "รายการนี้ถูกจำหน่ายแล้วไม่สามารถแก้ไขรายการได้"}';
+        	}else{
+        		$item_id = get_service_item_id($id);
+        		$rs = $this->service->remove_item($id);
+        		if($rs){
 
-                $this->service->user_id = $this->user_id;
+        			$this->service->user_id = $this->user_id;
 
-                $detail = 'ลบค่าใช้จ่าย --> ' . get_item_name($item_id);
-                $rs = $this->service->save_activities($sv, $detail);
-                $json = '{"success": true}';
-            }else{
-                $json = '{"success": false, "msg": "Cant\'t remove item."}';
-            }
+        			$detail = 'ลบค่าใช้จ่าย --> ' . get_item_name($item_id);
+        			$rs = $this->service->save_activities($sv, $detail);
+        			$json = '{"success": true}';
+        		}else{
+        			$json = '{"success": false, "msg": "Cant\'t remove item."}';
+        		}
+        	}
         }
 
         render_json($json);
@@ -424,7 +477,7 @@ class Services extends CI_Controller
                 $obj->tech_user_id = empty($r->tech_user_id) ? '' : $r->tech_user_id;
                 $obj->tech_name = empty($r->tech_name) ? '-' : $r->tech_name;
                 $obj->owner_name = $r->owner_name;
-
+                $obj->service_type = get_type_name($r->service_type_id);
 
                 array_push($arr_result, $obj);
             }
@@ -504,6 +557,7 @@ class Services extends CI_Controller
                 $obj->cause = $r->cause;
                 $obj->service_status = $r->service_status;
                 $obj->status = get_status_name($r->service_status);
+                $obj->service_type = get_type_name($r->service_type_id);
 
                 array_push($arr_result, $obj);
             }
@@ -549,6 +603,7 @@ class Services extends CI_Controller
                 $obj->cause = $r->cause;
                 $obj->service_status = $r->service_status;
                 $obj->status = get_status_name($r->service_status);
+                $obj->service_type = get_type_name($r->service_type_id);
 
                 array_push($arr_result, $obj);
             }
@@ -574,20 +629,27 @@ class Services extends CI_Controller
             $json = '{"success": false, "msg": "No detail for save."}';
         }else{
 
-            if($data['type'] == 'code'){
-                    $rs = $this->service->save_code_result($data['id'], $data['detail']);
-                }else{
-                   $rs = $this->service->save_other_result($data['id'], $data['detail']);
-                }
+        	//check discharge status
+        	$discharged = $this->service->check_discharge_status($data['sv']);
+        	if($discharged){
+        		$json = '{"success": false, "msg": "รายการนี้ถูกจำหน่ายแล้วไม่สามารถแก้ไขรายการได้"}';
+        	}else{
+        		if($data['type'] == 'code'){
+        			$rs = $this->service->save_code_result($data['id'], $data['detail']);
+        		}else{
+        			$rs = $this->service->save_other_result($data['id'], $data['detail']);
+        		}
 
-                if($rs){
-                    $this->service->user_id = $this->user_id;
-                    $detail = 'สรุปผลการให้บริการ --> ' . $data['detail'];
-                    $rs = $this->service->save_activities($data['sv'], $detail);
-                    $json = '{"success": true}';
-                }else{
-                    $json = '{"success": false, "msg": "Can\'t save result."}';
-                }
+        		if($rs){
+        			$this->service->user_id = $this->user_id;
+        			$detail = 'สรุปผลการให้บริการ --> ' . $data['detail'];
+        			$rs = $this->service->save_activities($data['sv'], $detail);
+        			$json = '{"success": true}';
+        		}else{
+        			$json = '{"success": false, "msg": "Can\'t save result."}';
+        		}
+        	}
+
         }
 
         render_json($json);
@@ -631,6 +693,7 @@ class Services extends CI_Controller
 	                $obj->cause = $r->cause;
 	                $obj->service_status = $r->service_status;
 	                $obj->status = get_status_name($r->service_status);
+	                $obj->service_type = get_type_name($r->service_type_id);
 
 	                array_push($arr_result, $obj);
 	            }
@@ -702,7 +765,7 @@ class Services extends CI_Controller
 
         render_json($json);
     }
-    
+
     public function do_discharge_main(){
     	$service_code = $this->input->post('service_code');
     	if(empty($service_code)){
@@ -715,7 +778,7 @@ class Services extends CI_Controller
     			$json = '{"success": false, "msg": "Can\'t discharge service, please check your data again."}';
     		}
     	}
-    	
+
     	render_json($json);
     }
     public function do_discharge_other(){
@@ -730,10 +793,10 @@ class Services extends CI_Controller
     			$json = '{"success": false, "msg": "Can\'t discharge service, please check your data again."}';
     		}
     	}
-    	
+
     	render_json($json);
     }
-    
+
     public function undo_discharge_main(){
     	$service_code = $this->input->post('service_code');
     	if(empty($service_code)){
@@ -746,7 +809,7 @@ class Services extends CI_Controller
     			$json = '{"success": false, "msg": "Can\'t discharge service, please check your data again."}';
     		}
     	}
-    	
+
     	render_json($json);
     }
     public function undo_discharge_other(){
@@ -761,7 +824,120 @@ class Services extends CI_Controller
     			$json = '{"success": false, "msg": "Can\'t discharge service, please check your data again."}';
     		}
     	}
-    	
+
+    	render_json($json);
+    }
+
+    public function save_discharge(){
+    	$data = $this->input->post('data');
+    	if(empty($data)){
+    		$json = '{"success": false, "msg": "No data for save."}';
+    	}else{
+    		//check login
+    		$auth = $this->user->check_login_technician($data['user_id'], $data['password']);
+    		if($auth){
+    			$rs = $this->service->save_discharge($data);
+    			if($rs){
+    				$json = '{"success": true}';
+    			}else{
+    				$json = '{"success": false, "msg": "Can\'t discharge service, please check your data again."}';
+    			}
+    		}else{
+    			$json = '{"success": false, "msg": "ชื่อผู้ใช้งาน หรือรหัสผ่านไม่ถูกต้อง"}';
+    		}
+    	}
+
+    	render_json($json);
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    public function save_main_type(){
+    	$data = $this->input->post('data');
+    	if(empty($data)){
+    		$json = '{"success": false, "msg": "ไม่พบข้อมูลที่ต้องการบันทึก"}';
+    	}else{
+    		//check user
+    		$auth = $this->user->check_login_technician($data['user_id'], $data['password']);
+    		if($auth){
+    			$rs = $this->service->save_main_type($data);
+    			if($rs){
+    				$json = '{"success": true}';
+    			}else{
+    				$json = '{"success": false, "msg": "Can\'t assign service type, please check your data again."}';
+    			}
+    		}else{
+    			$json = '{"success": false, "msg": "ชื่อผู้ใช้งาน หรือรหัสผ่านไม่ถูกต้อง"}';
+    		}
+    	}
+
+    	render_json($json);
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    public function save_other_type(){
+    	$data = $this->input->post('data');
+    	if(empty($data)){
+    		$json = '{"success": false, "msg": "ไม่พบข้อมูลที่ต้องการบันทึก"}';
+    	}else{
+    		//check user
+    		$auth = $this->user->check_login_technician($data['user_id'], $data['password']);
+    		if($auth){
+    			$rs = $this->service->save_other_type($data);
+    			if($rs){
+    				$json = '{"success": true}';
+    			}else{
+    				$json = '{"success": false, "msg": "Can\'t assign service type, please check your data again."}';
+    			}
+    		}else{
+    			$json = '{"success": false, "msg": "ชื่อผู้ใช้งาน หรือรหัสผ่านไม่ถูกต้อง"}';
+    		}
+    	}
+
+    	render_json($json);
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    public function save_more_technician(){
+    	$data = $this->input->post('data');
+    	if(empty($data)){
+    		$json = '{"success": false, "msg": "ไม่พบข้อมูลที่ต้องการบันทึก"}';
+    	}else{
+    		//check user
+    		$auth = $this->user->check_login_technician($data['user_id'], $data['password']);
+    		if($auth){
+    			$duplicated = $this->service->check_more_technician_exist($data['sv'], $data['tech_user_id']);
+
+    			if($duplicated){
+    				$json = '{"success": false, "msg": "มีชื่อช่างคนนี้ในฐานข้อมูลแล้ว กรุณาเลือกรายการใหม่"}';
+    			}else{
+    				$rs = $this->service->save_more_technician($data);
+    				if($rs){
+    					$json = '{"success": true}';
+    				}else{
+    					$json = '{"success": false, "msg": "Can\'t assign more technician, please check your data again."}';
+    				}
+    			}
+
+    		}else{
+    			$json = '{"success": false, "msg": "ชื่อผู้ใช้งาน หรือรหัสผ่านไม่ถูกต้อง"}';
+    		}
+    	}
+
+    	render_json($json);
+    }
+
+    public function get_more_technicians(){
+    	$sv = $this->input->post('sv');
+    	if(empty($sv)){
+    		$json = '{"success": false, "msg": "ไม่พบรหัสรับบริการ"}';
+    	}else{
+    		$rs = $this->service->get_more_technicians($sv);
+    		if($rs){
+    			$rows = json_encode($rs);
+    			$json = '{"success": true, "rows": '.$rows.'}';
+
+    		}else{
+    			$json = '{"success": false, "msg": "No result found."}';
+    		}
+    	}
     	render_json($json);
     }
 }

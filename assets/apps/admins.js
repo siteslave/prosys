@@ -21,11 +21,20 @@ $(function(){
     };
 
     admin.ajax = {
-        get_list: function(cb){
+        get_list: function(start, stop, cb){
             var url = '/admins/get_list',
                 params = {
-
+            		start: start,
+            		stop: stop
                 };
+
+            App.ajax(url, params, function(err, data){
+                err ? cb(err) : cb(null, data);
+            });
+        },
+        get_list_total: function(cb){
+            var url = '/admins/get_list_total',
+                params = { };
 
             App.ajax(url, params, function(err, data){
                 err ? cb(err) : cb(null, data);
@@ -75,41 +84,113 @@ $(function(){
     };
 
     admin.get_list = function(){
-        $('#tbl_list tbody').empty();
-        admin.ajax.get_list(function(err, data){
-            if(err){
-                App.alert(err);
-                $('#tbl_list tbody').append(
-                    '<tr><td colspan="5">ไม่พบรายการ</td></tr>'
-                );
-            }else{
-                if(_.size(data.rows) > 0){
-                    _.each(data.rows, function(v){
-                        var status = v.user_status == '1' ? 'ปกติ' : 'ระงับสิทธิ';
-                        $('#tbl_list tbody').append(
-                            '<tr>' +
-                                '<td>' + v.username + '</td>' +
-                                '<td>' + v.fullname + '</td>' +
-                                '<td>' + v.owner_name + '</td>' +
-                                '<td>' + v.type_name + '</td>' +
-                                '<td>' + status + '</td>' +
-                                '<td><div class="btn-group"> ' +
-                                '<a href="javascript:void(0);" class="btn" title="แก้ไข" data-name="btn_edit" data-id="'+ v.id +'"><i class="icon-edit"></i> </a> ' +
-                                '<a href="javascript:void(0);" class="btn" title="เปลี่ยนรหัสผ่าน" data-name="btn_change_pass" data-username="'+ v.username +'" data-id="'+ v.id +'"><i class="icon-refresh"></i> </a> ' +
-                                '<a href="javascript:void(0);" class="btn" title="ลบ" data-name="btn_remove" data-id="'+ v.id +'"><i class="icon-trash"></i> </a> ' +
-                                '</div></td>' +
-                            '</tr>'
-                        );
-                    });
-                }else{
-                    $('#tbl_list tbody').append(
-                        '<tr><td colspan="5">ไม่พบรายการ</td></tr>'
-                    );
-                }
-            }
-        });
+        
+        admin.ajax.get_list_total(function(err, data){
+	        if(err){
+	            App.alert(err);
+	        }else{
+	            $('#main_paging > ul').paging(data.total, {
+	                format: " < . (qq -) nnncnnn (- pp) . >",
+	                perpage: App.record_perpage,
+	                lapping: 1,
+	                page: 1,
+	                onSelect: function(page){
+	                    //console.log('page: ' + page);
+	                    //console.log(this.slice);      //this.slice[0] = start, this.slice[1] = stop
+	
+	                    admin.ajax.get_list(this.slice[0], this.slice[1], function(err, data){
+	                    	$('#tbl_list tbody').empty();
+	                    	if(err){
+	                            App.alert(err);
+	                            
+	                            $('#tbl)list > tbody').append(
+	                            		'<tr><td colspan="6">ไม่พบรายการ</td></tr>');
+	                        }else{
+	                            admin.set_list(data);
+	                        }
+	
+	                    });
+	
+	                },
+	                onFormat: function(type){
+	                    switch (type) {
+	
+	                        case 'block':
+	
+	                            if (!this.active)
+	                                return '<li class="disabled"><a href="">' + this.value + '</a></li>';
+	                            else if (this.value != this.page)
+	                                return '<li><a href="#' + this.value + '">' + this.value + '</a></li>';
+	                            return '<li class="active"><a href="#">' + this.value + '</a></li>';
+	
+	                        case 'right':
+	                        case 'left':
+	
+	                            if (!this.active) {
+	                                return "";
+	                            }
+	                            return '<li><a href="#' + this.value + '">' + this.value + '</a></li>';
+	
+	                        case 'next':
+	
+	                            if (this.active) {
+	                                return '<li><a href="#' + this.value + '">&raquo;</a></li>';
+	                            }
+	                            return '<li class="disabled"><a href="">&raquo;</a></li>';
+	
+	                        case 'prev':
+	
+	                            if (this.active) {
+	                                return '<li><a href="#' + this.value + '">&laquo;</a></li>';
+	                            }
+	                            return '<li class="disabled"><a href="">&laquo;</a></li>';
+	
+	                        case 'first':
+	
+	                            if (this.active) {
+	                                return '<li><a href="#' + this.value + '">&lt;</a></li>';
+	                            }
+	                            return '<li class="disabled"><a href="">&lt;</a></li>';
+	
+	                        case 'last':
+	
+	                            if (this.active) {
+	                                return '<li><a href="#' + this.value + '">&gt;</a></li>';
+	                            }
+	                            return '<li class="disabled"><a href="">&gt;</a></li>';
+	
+	                        case 'fill':
+	                            if (this.active) {
+	                                return '<li class="disabled"><a href="#">...</a></li>';
+	                            }
+	                    }
+	                    return ""; // return nothing for missing branches
+	                }
+	            });
+	        }
+	    });	
     };
-
+    admin.set_list = function(data){
+    	if(_.size(data.rows) > 0){
+            _.each(data.rows, function(v){
+                var status = v.user_status == '1' ? 'ปกติ' : 'ระงับสิทธิ';
+                $('#tbl_list tbody').append(
+                    '<tr>' +
+                        '<td>' + v.username + '</td>' +
+                        '<td>' + v.fullname + '</td>' +
+                        '<td>' + v.owner_name + '</td>' +
+                        '<td>' + v.type_name + '</td>' +
+                        '<td>' + status + '</td>' +
+                        '<td><div class="btn-group"> ' +
+                        '<a href="javascript:void(0);" class="btn" title="แก้ไข" data-name="btn_edit" data-id="'+ v.id +'"><i class="icon-edit"></i> </a> ' +
+                        '<a href="javascript:void(0);" class="btn" title="เปลี่ยนรหัสผ่าน" data-name="btn_change_pass" data-username="'+ v.username +'" data-id="'+ v.id +'"><i class="icon-refresh"></i> </a> ' +
+                        '<a href="javascript:void(0);" class="btn" title="ลบ" data-name="btn_remove" data-id="'+ v.id +'"><i class="icon-trash"></i> </a> ' +
+                        '</div></td>' +
+                    '</tr>'
+                );
+            });
+    	}
+    };
     admin.clear_form = function(){
         $('#txt_id').val('');
         //$('#txt_old_fullname').val('');
@@ -252,7 +333,7 @@ $(function(){
                     App.alert('ลบรายการเสร็จเรียบร้อยแล้ว');
                     obj.fadeOut('slow');
                 }
-            })
+            });
         }
     });
 

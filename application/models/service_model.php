@@ -185,7 +185,7 @@ class Service_model extends CI_Model
         $rs = $this->db
             ->where('s.service_code', $query)
             ->or_where('p.code', $query)
-            ->join('products p', 'p.id=s.product_id')
+            ->join('products p', 'p.id=s.product_id', 'left')
             ->count_all_results('main_services s');
         return $rs;
     }
@@ -286,14 +286,14 @@ class Service_model extends CI_Model
         $rs = $this->db->where('service_code', $service_code)->delete('other_services');
         return $rs;
     }
-    
+
     public function do_discharge_main($service_code){
     	$rs = $this->db->where('service_code', $service_code)
 			->set('discharge_status', '1')
 			->update('main_services');
 		return $rs;
     }
-    
+
     public function do_discharge_other($service_code){
     	$rs = $this->db->where('service_code', $service_code)
 			->set('discharge_status', '1')
@@ -306,11 +306,66 @@ class Service_model extends CI_Model
 			->update('main_services');
 		return $rs;
     }
-    
+
     public function undo_discharge_other($service_code){
     	$rs = $this->db->where('service_code', $service_code)
 			->set('discharge_status', '0')
 			->update('other_services');
 		return $rs;
     }
+
+    public function save_discharge($data){
+    	$rs = $this->db
+    				->set('service_code', $data['sv'])
+    				->set('discharge_date', to_mysql_date($data['discharge_date']))
+    				->set('user_id', $data['user_id'])
+    				->insert('service_discharges');
+    	return $rs;
+    }
+
+    public function check_discharge_status($sv){
+    	$rs = $this->db->where('service_code', $sv)->count_all_results('service_discharges');
+
+    	return $rs > 0 ? TRUE : FALSE;
+    }
+
+    public function save_main_type($data){
+    	$rs = $this->db->where('service_code', $data['sv'])
+    					->set('service_type_id', $data['type'])
+    					->update('main_services');
+    	return $rs;
+    }
+
+    public function save_other_type($data){
+    	$rs = $this->db->where('service_code', $data['sv'])
+    	->set('service_type_id', $data['type'])
+    	->update('other_services');
+    	return $rs;
+    }
+
+    public function save_more_technician($data){
+    	$rs = $this->db->set('tech_user_id', $data['tech_user_id'])
+    					->set('service_code', $data['sv'])
+    					->insert('service_technicians');
+    	return $rs;
+    }
+
+    public function check_more_technician_exist($sv, $tech_user_id){
+    	$rs = $this->db->where('tech_user_id', $tech_user_id)
+    					->where('service_code', $sv)
+    					->count_all_results('service_technicians');
+    	return $rs > 0 ? TRUE : FALSE;
+    }
+
+    public function get_more_technicians($sv){
+    	$rs = $this->db->select(array('u.id', 'u.username', 'u.fullname'))
+    					->join('users u', 'u.id=t.tech_user_id', 'left')
+    					->where('t.service_code', $sv)
+    					->get('service_technicians t')
+    					->result();
+    	return $rs;
+    }
+
+
+
 }

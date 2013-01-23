@@ -14,9 +14,9 @@
                 <p>บันทึกรายการส่งซ่อมสินค้า (กรณีส่งซ่อมที่อื่น)</p>
             </blockquote>
             <form action="#" class="form-inline form-actions">
-            	
+
             	<input type="hidden" id="txt_status" value="-1">
-            	
+
                 <label for="txt_query">ค้นหา</label>
                 <div class="input-append">
                     <input class="input-xlarge" id="txt_query" type="text" placeholder="เลขที่ใบรับซ่อม, เลขที่ใบส่งซ่อม...">
@@ -28,7 +28,7 @@
                 <button class="btn btn-success" type="button" id="btn_new">
                     <i class="icon-plus-sign icon-white"></i> เพิ่มรายการ
                 </button>
-                
+
                 <div class="btn-group pull-right">
                 	<a href="javascript:void(0);" class="btn" data-name="btn_set_status" data-status="-1"><i class="icon-refresh"></i>ทั้งหมด</a>
                 	<a href="javascript:void(0);" class="btn" data-name="btn_set_status" data-status="1"><i class="icon-share-alt"></i>รับคืนแล้ว</a>
@@ -54,11 +54,11 @@
                 <tbody>
                 </tbody>
             </table>
-            
+
             <div id="main_paging" class="pagination pagination-centered">
                 <ul></ul>
             </div>
-            
+
         </div>
     </div>
 </div>
@@ -82,7 +82,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="control-group">
 	                <label class="control-label" for="btn_new_search_service">เลขที่ใบรับซ่อม</label>
 	                <div class="controls">
@@ -112,6 +112,15 @@
 	                    <textarea class="input-xxlarge" rows="4" id="txt_new_send_comment"></textarea>
 	                </div>
 	            </div>
+	            <div class="control-group">
+				  <label class="control-label" for="sl_new_send_place">ประเภท</label>
+				  <div class="controls">
+					<select>
+						<option value="1">ในจังหวัด</option>
+						<option value="2">นอกจังหวัด</option>
+					</select>
+				  </div>
+				</div>
 	            <div class="control-group">
 				  <label class="control-label" for="chk_new_send_change_status">เปลี่ยนสถานะ</label>
 				  <div class="controls">
@@ -162,7 +171,7 @@
 	                </div>
 	                </div>
 	            </div>
-	            
+
                 <div class="control-group">
 	                <label class="control-label" for="txt_edit_username">เจ้าหน้าที่</label>
 	                <div class="controls">
@@ -310,7 +319,7 @@
                 </div>
             </div>
         </form>
-        
+
         <table class="table table-striped table-hover" id="tbl_service_result">
         	<thead>
         		<tr>
@@ -349,7 +358,7 @@
                 </div>
             </div>
         </form>
-        
+
         <table class="table table-striped table-hover" id="tbl_company_result">
         	<thead>
         		<tr>
