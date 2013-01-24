@@ -6,11 +6,12 @@ class Admin_model extends CI_Model
     public function get_list($start, $limit)
     {
         $rs = $this->db
-                ->select(array('u.*', 't.type_name', 'o.name as owner_name'))
-                ->join('user_types t', 't.type_code=u.user_type')
+                ->select(array('u.*', 't.type_name', 'o.name as owner_name', 'tt.name as technician_type_name'))
+                ->join('user_types t', 't.type_code=u.user_type', 'left')
                 ->join('owners o', 'o.id=u.owner', 'left')
+                ->join('technician_types tt', 'tt.id=u.tech_type_id', 'left')
                 ->limit($limit, $start)
-                ->order_by('u.fullname', 'DESC')->get('users u')->result();
+                ->order_by('u.fullname', 'ASC')->get('users u')->result();
         return $rs;
     }
 
@@ -36,9 +37,10 @@ class Admin_model extends CI_Model
         $rs = $this->db
                 ->set('fullname', $data['fullname'])
                 ->set('username', $data['username'])
-                ->set('password', $data['password'])
+                ->set('password', md5($data['password']))
                 ->set('user_type', $data['user_type'])
                 ->set('user_status', $data['user_status'])
+                ->set('tech_type_id', $data['tech_type_id'])
                 ->set('owner', $data['owner'])
                 ->insert('users');
         return $rs;
@@ -53,6 +55,7 @@ class Admin_model extends CI_Model
             ->set('user_type', $data['user_type'])
             ->set('user_status', $data['user_status'])
             ->set('owner', $data['owner'])
+            ->set('tech_type_id', $data['tech_type_id'])
             ->update('users');
         return $rs;
     }
@@ -76,4 +79,28 @@ class Admin_model extends CI_Model
         $rs = $this->db->where('id', $id)->delete('users');
         return $rs;
     }
+
+    public function search($query){
+    	$sql = '
+    			select u.*, t.type_name, o.name as owner_name, tt.name as technician_type_name
+    			from users u
+    			left join user_types t on t.type_code=u.user_type
+    			left join owners o on o.id=u.owner
+    			left join technician_types tt on tt.id=u.tech_type_id
+    			where (u.fullname like "%'.$query.'%" or u.username="'.$query.'")
+    			';
+    	$rs = $this->db->query($sql)->result();
+    	/*
+    	$rs = $this->db
+			    	->select(array('u.*', 't.type_name', 'o.name as owner_name', 'tt.name as technician_type_name'))
+			    	->join('user_types t', 't.type_code=u.user_type', 'left')
+			    	->join('owners o', 'o.id=u.owner', 'left')
+			    	->join('technician_types tt', 'tt.id=u.tech_type_id', 'left')
+			    	//->like('u.fullname', $query, 'both')
+			    	->where('u.username', $query)
+			    	->order_by('u.fullname', 'ASC')->get('users u')->result();
+		*/
+    	return $rs;
+    }
+
 }

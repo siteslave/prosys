@@ -106,7 +106,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="javascript:void(0);"><i class="icon-refresh"></i> ยกเลิกการจำหน่าย</a>
+                                <a href="javascript:void(0);" data-name="btn_show_remove_discharge"><i class="icon-refresh"></i> ยกเลิกการจำหน่าย</a>
                             </li>
                         </ul>
                     </li>
@@ -141,19 +141,31 @@
                                 <a href="<?php echo site_url('models'); ?>"><i class="icon-th"></i> รุ่น (Models)</a>
                             </li>
                             <li class="divider"></li>
-                            <li>
-                                <a href="<?php echo site_url('suppliers'); ?>"><i class="icon-home"></i> ทะเบียนบริษัท/ร้านค้า</a>
-                            </li>
-                            <li>
-                                <a href="<?php echo site_url('parts'); ?>"><i class="icon-th-list"></i> รายการอะไหล่ (Spare parts) </a>
-                            </li>
-                            <li>
-                                <a href="<?php echo site_url('status'); ?>"><i class="icon-refresh"></i> สถานะงานซ่อม (Service status) </a>
-                            </li>
+                            <li class="dropdown-submenu pull-left">
+								<a tabindex="-1" href="#"><i class="icon-th-list"></i> เมนูอื่นๆ...</a>
+								<ul class="dropdown-menu">
+									<li>
+                                		<a href="<?php echo site_url('suppliers'); ?>"><i class="icon-home"></i> ทะเบียนบริษัท/ร้านค้า</a>
+		                            </li>
+		                            <li>
+		                                <a href="<?php echo site_url('parts'); ?>"><i class="icon-th-list"></i> รายการอะไหล่ (Spare parts) </a>
+		                            </li>
+		                            <li>
+		                                <a href="<?php echo site_url('status'); ?>"><i class="icon-refresh"></i> สถานะงานซ่อม (Service status) </a>
+		                            </li>
+		                            <li>
+		                                <a href="<?php echo site_url('service_types'); ?>"><i class="icon-tags"></i> ประเภทงาน (Service types) </a>
+		                            </li>
+		                            <li>
+		                                <a href="<?php echo site_url('service_types'); ?>"><i class="icon-share"></i> ประเภทงานซ่อม (Type of services) </a>
+		                            </li>
+		                            <li>
+		                                <a href="<?php echo site_url('technician_types'); ?>"><i class="icon-tags"></i> ประเภทช่าง (Technician types) </a>
+		                            </li>
+								</ul>
+							</li>
 
-                            <li>
-                                <a href="<?php echo site_url('service_types'); ?>"><i class="icon-tags"></i> ประเภทงานซ่อม (Service types) </a>
-                            </li>
+
                         </ul>
                     </li>
                 </ul>
@@ -335,6 +347,50 @@
             </table>
         </div>
         <div class="modal-footer">
+            <a href="#" class="btn btn-danger" data-dismiss="modal"><i class="icon-off icon-white"></i> ปิดหน้าต่าง</a>
+        </div>
+   </div>
+
+   <div class="modal hide fade" id="mdl_remove_discharge">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3>ยกเลิกการจำหน่าย</h3>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <div class="control-group">
+                    <label class="control-label" for="txt_rmd_service_code">เลขที่ใบแจ้งซ่อม</label>
+                    <div class="controls">
+                        <input type="text" id="txt_rmd_service_code" class="">
+                    </div>
+                </div>
+				<legend>ยืนยัน (Confirmation)</legend>
+				<div class="control-group">
+                    <label class="control-label" for="sl_rmd_user">ชื่อผู้ใช้งาน</label>
+                    <div class="controls">
+                        <select id="sl_rmd_user">
+                        	<option value="">---</option>
+	                        <?php
+	                        $users = get_admin_list();
+
+	                            foreach($users as $u){
+	                                echo '<option value="'.$u->id.'">'.$u->fullname.'</option>';
+	                            }
+	                        ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="txt_rmd_password">รหัสผ่าน</label>
+                    <div class="controls">
+                        <input type="password" id="txt_rmd_password">
+                    </div>
+            	</div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btn-success" id="btn_do_rmd"><i class="icon-share icon-white"></i> ยืนยันการลบ</a>
             <a href="#" class="btn btn-danger" data-dismiss="modal"><i class="icon-off icon-white"></i> ปิดหน้าต่าง</a>
         </div>
    </div>

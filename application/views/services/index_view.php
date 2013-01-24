@@ -484,12 +484,27 @@
                 </div>
 
                 <div class="control-group">
-                    <label class="control-label" for="sl_type">ประเภทงานซ่อม</label>
+                    <label class="control-label" for="sl_type">ประเภทงาน</label>
                     <div class="controls">
                         <select id="sl_type">
                         	<option value="">---</option>
 	                        <?php
 	                        $rs = get_service_type_list();
+
+	                            foreach($rs as $r){
+	                                echo '<option value="'.$r->id.'">'.$r->name.'</option>';
+	                            }
+	                        ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="sl_type_service">ประเภทงานซ่อม</label>
+                    <div class="controls">
+                        <select id="sl_type_service">
+                        	<option value="">---</option>
+	                        <?php
+	                        	$rs = get_type_of_service();
 
 	                            foreach($rs as $r){
 	                                echo '<option value="'.$r->id.'">'.$r->name.'</option>';
@@ -550,6 +565,21 @@
                         	<option value="">---</option>
 	                        <?php
 	                        	$rs = get_service_type_list();
+
+	                            foreach($rs as $r){
+	                                echo '<option value="'.$r->id.'">'.$r->name.'</option>';
+	                            }
+	                        ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="sl_type_service_other">ประเภทงานซ่อม</label>
+                    <div class="controls">
+                        <select id="sl_type_service_other">
+                        	<option value="">---</option>
+	                        <?php
+	                        	$rs = get_type_of_service();
 
 	                            foreach($rs as $r){
 	                                echo '<option value="'.$r->id.'">'.$r->name.'</option>';

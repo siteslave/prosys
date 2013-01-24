@@ -65,6 +65,8 @@ class Services extends CI_Controller
                 $obj->tech_name = empty($r->tech_name) ? '-' : $r->tech_name;
                 $obj->owner_name = $r->owner_name;
                 $obj->service_type = get_type_name($r->service_type_id);
+                $obj->tech_type_name = get_type_service_name($r->type_service_id);
+				$obj->tech_more = count_technician_in_more($r->service_code);
 
                 array_push($arr_result, $obj);
             }
@@ -478,6 +480,8 @@ class Services extends CI_Controller
                 $obj->tech_name = empty($r->tech_name) ? '-' : $r->tech_name;
                 $obj->owner_name = $r->owner_name;
                 $obj->service_type = get_type_name($r->service_type_id);
+                $obj->tech_type_name = get_type_service_name($r->type_service_id);
+                $obj->tech_more = count_technician_in_more($r->service_code);
 
                 array_push($arr_result, $obj);
             }
@@ -558,6 +562,8 @@ class Services extends CI_Controller
                 $obj->service_status = $r->service_status;
                 $obj->status = get_status_name($r->service_status);
                 $obj->service_type = get_type_name($r->service_type_id);
+                $obj->tech_type_name = get_type_service_name($r->type_service_id);
+                $obj->tech_more = count_technician_in_more($r->service_code);
 
                 array_push($arr_result, $obj);
             }
@@ -604,6 +610,8 @@ class Services extends CI_Controller
                 $obj->service_status = $r->service_status;
                 $obj->status = get_status_name($r->service_status);
                 $obj->service_type = get_type_name($r->service_type_id);
+                $obj->tech_type_name = get_type_service_name($r->type_service_id);
+                $obj->tech_more = count_technician_in_more($r->service_code);
 
                 array_push($arr_result, $obj);
             }
@@ -694,6 +702,8 @@ class Services extends CI_Controller
 	                $obj->service_status = $r->service_status;
 	                $obj->status = get_status_name($r->service_status);
 	                $obj->service_type = get_type_name($r->service_type_id);
+	                $obj->tech_type_name = get_type_service_name($r->type_service_id);
+	                $obj->tech_more = count_technician_in_more($r->service_code);
 
 	                array_push($arr_result, $obj);
 	            }
@@ -838,6 +848,7 @@ class Services extends CI_Controller
     		if($auth){
     			$rs = $this->service->save_discharge($data);
     			if($rs){
+    				$this->service->update_discharge_status($data['sv'], '1');
     				$json = '{"success": true}';
     			}else{
     				$json = '{"success": false, "msg": "Can\'t discharge service, please check your data again."}';
@@ -938,6 +949,30 @@ class Services extends CI_Controller
     			$json = '{"success": false, "msg": "No result found."}';
     		}
     	}
+    	render_json($json);
+    }
+
+    public function remove_discharge(){
+    	$data = $this->input->post('data');
+
+    	if(empty($data)){
+    		$json = '{"success": false, "msg": "No data found."}';
+    	}else{
+
+    		$auth = $this->user->check_login_technician($data['user_id'], $data['password']);
+    		if($auth){
+    			$rs = $this->service->remove_discharge($data['sv']);
+    			if($rs){
+    				$this->service->update_discharge_status($data['sv'], '0');
+    				$json = '{"success": true}';
+    			}else{
+    				$json = '{"success": false, "msg": "Can\'t remove discharge status"}';
+    			}
+    		}else{
+    			$json = '{"success": false, "msg": "ชื่อผู้ใช้งาน หรือรหัสผ่านไม่ถูกต้อง"}';
+    		}
+    	}
+
     	render_json($json);
     }
 }

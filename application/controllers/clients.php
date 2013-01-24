@@ -48,8 +48,8 @@ class clients extends CI_Controller
 
         render_json($json);
     }
-	
-	
+
+
     public function search_other_product(){
         $query = $this->input->post('query');
         if(empty($query)){
@@ -67,15 +67,15 @@ class clients extends CI_Controller
 
         render_json($json);
     }
-    
+
     public function save_reg_product(){
         $data = $this->input->post('data');
         if(empty($data)){
             $json = '{"success": false, "msg": "No data for save."}';
         }else{
             //check current status
-            $current_status = $this->client->get_current_product_status($data['product_id']);
-            if($current_status == '4' || $current_status == '7'){
+            $discharged = $this->client->check_discharged($data['product_id']);
+            if($discharged){
                 //generate serial
                 $data['service_code'] = generate_serial('SERVICE', TRUE);
                 $data['user_id'] = $this->session->userdata('user_id');
@@ -95,7 +95,7 @@ class clients extends CI_Controller
 
         render_json($json);
     }
- 
+
      public function save_other_product(){
         $data = $this->input->post('data');
         if(empty($data)){
@@ -115,9 +115,9 @@ class clients extends CI_Controller
 	                //generate serial
 	                $data['service_code'] = generate_serial('SERVICE_OTHER', TRUE);
 	                $data['user_id'] = $this->session->userdata('user_id');
-	
+
 	                $rs = $this->client->save_other_product($data);
-	
+
 	                if($rs){
 	                    $json = '{"success": true}';
 	                }else{
@@ -141,11 +141,11 @@ class clients extends CI_Controller
         $stop = empty($stop) ? 25 : $stop;
 
         $limit = (int) $stop - (int) $start;
-		
+
 		$status = $this->input->post('status');
 
         $status = empty($status) ? '0' : $status;
-		
+
 
         $rs = $this->client->get_service_by_code_list($status, $start, $limit);
 
@@ -190,7 +190,7 @@ class clients extends CI_Controller
 		$status = $this->input->post('status');
 
         $status = empty($status) ? '0' : $status;
-		
+
         $limit = (int) $stop - (int) $start;
 
         $rs = $this->client->get_service_by_other_list($status, $start, $limit);
@@ -229,7 +229,7 @@ class clients extends CI_Controller
 
         $status = empty($status) ? '0' : $status;
         $this->client->user_id = $this->user_id;
-		
+
         $total = $this->client->get_service_by_code_total($status);
         $json = '{"success": true, "total": '.$total.'}';
 
@@ -242,13 +242,13 @@ class clients extends CI_Controller
 		$status = $this->input->post('status');
 
         $status = empty($status) ? '0' : $status;
-		
+
         $total = $this->client->get_service_by_other_total($status);
         $json = '{"success": true, "total": '.$total.'}';
 
         render_json($json);
     }
-	
+
 	  public function get_search_service_by_other_list(){
         $start = $this->input->post('start');
         $stop = $this->input->post('stop');
@@ -260,7 +260,7 @@ class clients extends CI_Controller
         $limit = (int) $stop - (int) $start;
 
 		$this->client->user_id = $this->user_id;
-		
+
         $rs = $this->client->get_search_service_by_other_list($query, $start, $limit);
 
         if($rs){
@@ -295,16 +295,16 @@ class clients extends CI_Controller
     public function get_search_service_by_other_total(){
 
         $query = $this->input->post('query');
-		
+
 		$this->client->user_id = $this->user_id;
-		
+
         $total = $this->client->get_search_service_by_other_total($query);
         $json = '{"success": true, "total": '.$total.'}';
 
         render_json($json);
     }
-	
-	
+
+
 	public function get_search_service_by_code_list(){
         $start = $this->input->post('start');
         $stop = $this->input->post('stop');
@@ -316,7 +316,7 @@ class clients extends CI_Controller
         $limit = (int) $stop - (int) $start;
 
 		$this->client->user_id = $this->user_id;
-		
+
         $rs = $this->client->get_search_service_by_code_list($query, $start, $limit);
 
         if($rs){
@@ -352,15 +352,15 @@ class clients extends CI_Controller
     public function get_search_service_by_code_total(){
 
         $query = $this->input->post('query');
-		
+
 		$this->client->user_id = $this->user_id;
-		
+
         $total = $this->client->get_search_service_by_code_total($query);
         $json = '{"success": true, "total": '.$total.'}';
 
         render_json($json);
     }
-    
+
     public function get_info($id=""){
         if(empty($id) || !isset($id)){
             show_error('No service found.', 404);
@@ -384,8 +384,8 @@ class clients extends CI_Controller
             }
         }
     }
-    
-    
+
+
      public function get_info_other($id=""){
         if(empty($id) || !isset($id)){
             show_error('No service.', 404);
@@ -424,8 +424,8 @@ class clients extends CI_Controller
 
         render_json($json);
     }
-    
-	
+
+
     public function get_item(){
         $sv = $this->input->post('sv');
         if(empty($sv)){
@@ -442,11 +442,11 @@ class clients extends CI_Controller
 
         render_json($json);
     }
-    
+
     public function change_password(){
         $username = $this->session->userdata('client_name');
         $password = $this->input->post('pwd');
-        
+
         if(empty($password)){
             $json = '{"success": false, "msg": "Blank password."}';
         }else{
@@ -457,7 +457,7 @@ class clients extends CI_Controller
                 $json = '{"success": false, "msg": "Can\'t change password."}';
             }
         }
-        
+
         render_json($json);
     }
 }

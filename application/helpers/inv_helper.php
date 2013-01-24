@@ -18,7 +18,7 @@ if ( ! function_exists('get_fullname') ) {
             ->where('username', $username)
             ->get('users')
             ->row();
-        return $result->fullname;
+        return $result ? $result->fullname : '-';
     }
 }
 if ( ! function_exists('get_type_name') ) {
@@ -29,9 +29,36 @@ if ( ! function_exists('get_type_name') ) {
 		->where('id', $id)
 		->get('service_types')
 		->row();
-		return $result->name;
+		return $result ? $result->name : '-';
 	}
 }
+
+if ( ! function_exists('get_technician_type_name') ) {
+	function get_technician_type_name( $id ) {
+		$ci =& get_instance();
+
+		$result = $ci->db->select('name')
+		->where('id', $id)
+		->get('technician_types')
+		->row();
+		return $result ? $result->name : '-';
+	}
+}
+
+if ( ! function_exists('get_type_service_name') ) {
+	function get_type_service_name( $id ) {
+		$ci =& get_instance();
+
+		$result = $ci->db->select('name')
+		->where('id', $id)
+		->get('type_services')
+		->row();
+
+		return $result ? $result->name : '-';
+	}
+}
+
+
 if ( ! function_exists('get_user_fullname_by_id') ) {
     function get_user_fullname_by_id( $id ) {
         $ci =& get_instance();
@@ -40,7 +67,7 @@ if ( ! function_exists('get_user_fullname_by_id') ) {
             ->where('id', $id)
             ->get('users')
             ->row();
-        return $result->fullname;
+        return $result ? $result->fullname : '';
     }
 }
 
@@ -52,7 +79,7 @@ if ( ! function_exists('get_item_name') ) {
             ->where('id', $id)
             ->get('items')
             ->row();
-        return $result->name;
+        return $result ? $result->name : '-';
     }
 }
 
@@ -64,7 +91,7 @@ if ( ! function_exists('get_company_name') ) {
             ->where('id', $id)
             ->get('suppliers')
             ->row();
-        return $result->name;
+        return $result ? $result->name : '-';
     }
 }
 if ( ! function_exists('get_service_item_id') ) {
@@ -359,6 +386,40 @@ if(!function_exists('get_service_type_list')){
 		return $rs;
 	}
 }
+
+if(!function_exists('get_technician_type_list')){
+	function get_technician_type_list(){
+		$ci =& get_instance();
+		$ci->load->model('Basic_model', 'basic');
+
+		$rs = $ci->basic->get_technician_type_list();
+
+		return $rs;
+	}
+}
+
+if(!function_exists('get_type_of_service')){
+	function get_type_of_service(){
+		$ci =& get_instance();
+		$ci->load->model('Basic_model', 'basic');
+
+		$rs = $ci->basic->get_type_of_service();
+
+		return $rs;
+	}
+}
+
+if(!function_exists('count_technician_in_more')){
+	function count_technician_in_more($sv){
+		$ci =& get_instance();
+		$ci->load->model('Basic_model', 'basic');
+
+		$rs = $ci->basic->count_technician_in_more($sv);
+
+		return $rs;
+	}
+}
+
 
 if(!function_exists('get_status_list')){
     function get_status_list(){

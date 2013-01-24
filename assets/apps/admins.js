@@ -80,6 +80,16 @@ $(function(){
             App.ajax(url, params, function(err, data){
                 err ? cb(err) : cb(null, data);
             });
+        },
+        search: function(query, cb){
+            var url = '/admins/search',
+                params = {
+                    query: query
+                };
+
+            App.ajax(url, params, function(err, data){
+                err ? cb(err) : cb(null, data);
+            });
         }
     };
 
@@ -89,6 +99,8 @@ $(function(){
 	        if(err){
 	            App.alert(err);
 	        }else{
+	        	$('#main_paging').fadeIn('slow');
+	        	
 	            $('#main_paging > ul').paging(data.total, {
 	                format: " < . (qq -) nnncnnn (- pp) . >",
 	                perpage: App.record_perpage,
@@ -104,7 +116,7 @@ $(function(){
 	                            App.alert(err);
 	                            
 	                            $('#tbl)list > tbody').append(
-	                            		'<tr><td colspan="6">ไม่พบรายการ</td></tr>');
+	                            		'<tr><td colspan="7">ไม่พบรายการ</td></tr>');
 	                        }else{
 	                            admin.set_list(data);
 	                        }
@@ -177,9 +189,10 @@ $(function(){
                 $('#tbl_list tbody').append(
                     '<tr>' +
                         '<td>' + v.username + '</td>' +
-                        '<td>' + v.fullname + '</td>' +
-                        '<td>' + v.owner_name + '</td>' +
-                        '<td>' + v.type_name + '</td>' +
+                        '<td>' + clear_null(v.fullname) + '</td>' +
+                        '<td>' + clear_null(v.owner_name) + '</td>' +
+                        '<td>' + clear_null(v.type_name) + '</td>' +
+                        '<td>' + clear_null(v.technician_type_name) + '</td>' +
                         '<td>' + status + '</td>' +
                         '<td><div class="btn-group"> ' +
                         '<a href="javascript:void(0);" class="btn" title="แก้ไข" data-name="btn_edit" data-id="'+ v.id +'"><i class="icon-edit"></i> </a> ' +
@@ -199,9 +212,9 @@ $(function(){
         $('#txt_password').removeAttr('disabled');
         $('#txt_username').removeAttr('disabled');
         $('#txt_password').val('');
-        //$('#sl_user_type').val();
-        //$('#chk_active').attr('checked') ? '1' : '0';
-        //$('#sl_owner').val();
+        set_first_selected($('#sl_tech_type'));
+        set_first_selected($('#sl_user_type'));
+        set_first_selected($('#sl_owner'));
     };
 
     admin.set_data = function(id){
@@ -216,6 +229,7 @@ $(function(){
                 $('#txt_username').attr('disabled', 'disabled').css('background-color', 'white');
                 $('#txt_password').val('######');
                 $('#sl_user_type').val(data.rows.user_type);
+                $('#sl_tech_type').val(data.rows.tech_type_id);
 
                 if(data.rows.user_status == '1'){
                     $('#chk_active').attr('checked', 'checked');
@@ -248,10 +262,15 @@ $(function(){
         items.user_type = $('#sl_user_type').val();
         items.user_status = $('#chk_active').attr('checked') ? '1' : '0';
         items.owner = $('#sl_owner').val();
+        items.tech_type_id = $('#sl_tech_type').val();
 
         if(!items.fullname){
             App.alert('กรุณาระบุชื่อ - สกุล');
-        }else if(!items.username || items.username.length < 4){
+        }else if(!items.user_type){
+        	App.alert('กรุณาระบุประเภทของผู้ใช้งาน');
+        }else if(!items.tech_type_id){
+        	App.alert('กรุณาระบุประเภทของช่าง');
+        }else if(!items.username || items.username.length < 2){
             App.alert('กรุณาระบุชื่อผู้ใช้งาน อย่างน้อย 4 ตัวอักษรขึ้นไป');
         }else if(!items.password){
             App.alert('กรุณาระบุรหัสผ่าน');
@@ -337,5 +356,31 @@ $(function(){
         }
     });
 
+    
+    //search
+    $('#btn_search').click(function(){
+        var query = $.trim($('#txt_query').val());
+
+        $('#tbl_list tbody').empty();
+
+		$('#main_paging').fadeOut('slow');
+		
+        if(query && query.length >= 2){
+            //do search
+            admin.ajax.search(query, function(err, data){
+                if(err){
+                    App.alert(err);
+                    $('#tbl_list tbody').append(
+                        '<tr><td colspan="2">ไม่พบรายการ</td></tr>'
+                    );
+                }else{
+                    admin.set_list(data);
+                }
+            });
+        }else{
+            admin.get_list();
+        }
+    });
+    
     admin.get_list();
 });

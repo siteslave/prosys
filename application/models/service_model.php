@@ -323,6 +323,18 @@ class Service_model extends CI_Model
     	return $rs;
     }
 
+    public function update_discharge_status($sv, $status){
+    	$rs = $this->db->where('service_code', $sv)
+    					->set('discharge_status', $status)
+    					->update('main_services');
+    	return $rs;
+    }
+
+    public function remove_discharge($sv){
+    	$rs = $this->db->where('service_code', $sv)->delete('service_discharges');
+    	return $rs;
+    }
+
     public function check_discharge_status($sv){
     	$rs = $this->db->where('service_code', $sv)->count_all_results('service_discharges');
 
@@ -332,6 +344,7 @@ class Service_model extends CI_Model
     public function save_main_type($data){
     	$rs = $this->db->where('service_code', $data['sv'])
     					->set('service_type_id', $data['type'])
+    					->set('type_service_id', $data['type_service'])
     					->update('main_services');
     	return $rs;
     }
@@ -339,6 +352,7 @@ class Service_model extends CI_Model
     public function save_other_type($data){
     	$rs = $this->db->where('service_code', $data['sv'])
     	->set('service_type_id', $data['type'])
+    	->set('type_service_id', $data['type_service'])
     	->update('other_services');
     	return $rs;
     }

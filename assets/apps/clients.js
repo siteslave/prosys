@@ -317,7 +317,7 @@ $(function(){
                                     '<td>'+ brand_name+'</td>' +
                                     '<td>'+ model_name +'</td>' +
                                     '<td><a href="javascript:void(0);" title="เลือกรายการนี้" data-name="btn_regcode_selected_product" class="btn btn-info" ' +
-                                    'data-id="'+ v.id +'" data-code="'+ v.code +'"> <i class="icon-ok icon-white"></i></a></td>' +
+                                    'data-id="'+ v.id +'" data-code="'+ v.code +'" data-product_name="'+v.name+'"> <i class="icon-ok icon-white"></i></a></td>' +
                                     '</tr>'
                             );
                         });
@@ -355,10 +355,12 @@ $(function(){
     
     $('a[data-name="btn_regcode_selected_product"]').live('click', function(){
         var id = $(this).attr('data-id'),
-            code = $(this).attr('data-code');
+            code = $(this).attr('data-code'),
+            name = $(this).attr('data-product_name');
 
         $('#txt_regcode_product_id').val(id);
-        $('#txt_regcode_product_code').val(code);
+        $('#txt_regcode_product_code').val(name);
+        //$('#txt_regcode_product_name').val(name);
 
         client.modal.hide_search_product();
     });

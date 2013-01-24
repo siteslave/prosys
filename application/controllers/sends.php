@@ -290,4 +290,5 @@ class Sends extends CI_Controller{
 
 		render_json($json);
 	}
+
 }

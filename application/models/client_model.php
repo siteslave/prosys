@@ -23,8 +23,8 @@ class Client_model extends CI_Model
             ->result();
         return $rs;
     }
-	
-	
+
+
 
     public function save_reg_product($data){
 
@@ -68,9 +68,9 @@ class Client_model extends CI_Model
     }
 
 	public function update_other_product($data){
-		
+
 		date_default_timezone_set('Asia/Bangkok');
-		
+
 		$rs = $this->db
 			->where('id', $data['id'])
             ->set('product_name', $data['product_name'])
@@ -80,10 +80,10 @@ class Client_model extends CI_Model
 			->set('priority_id', $data['priority_id'])
 			->set('last_update', date('Y-m-d H:i:s'))
             ->update('other_services');
-			
+
 		return $rs;
 	}
-	
+
     public function get_current_product_status($product_id){
         //SELECT id, service_status FROM `main_services` where product_id=6452 order by id desc limit 1;
         $rs = $this->db
@@ -189,7 +189,7 @@ class Client_model extends CI_Model
 	            ->get('other_services s')
 	            ->result();
 	        return $rs;
-     	}   
+     	}
     }
 
 
@@ -206,9 +206,9 @@ class Client_model extends CI_Model
 	        	->count_all_results('main_services');
 	        return $rs;
     	}
-        
+
     }
-	
+
 	public function get_service_by_other_total($status){
         if($status == '0'){
     		$rs = $this->db
@@ -223,9 +223,9 @@ class Client_model extends CI_Model
 	        return $rs;
     	}
     }
-	
-	
-	
+
+
+
 	public function get_search_service_by_other_list($query, $start, $limit)
     {
         $rs = $this->db
@@ -249,9 +249,9 @@ class Client_model extends CI_Model
             ->count_all_results('other_services s');
         return $rs;
     }
-	
-	
-		
+
+
+
 	public function get_search_service_by_code_list($query, $start, $limit)
     {
         	$rs = $this->db
@@ -283,5 +283,13 @@ class Client_model extends CI_Model
 			->or_where('p.code', $query)
             ->count_all_results('main_services s');
         return $rs;
+    }
+
+    public function check_discharged($id){
+    	$rs = $this->db->where('discharge_status', '0')
+    					->where('product_id', $id)
+    					->count_all_results('main_services');
+
+    	return $rs > 0 ? FALSE : TRUE;
     }
 }

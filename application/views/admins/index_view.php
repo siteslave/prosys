@@ -12,13 +12,26 @@
             <blockquote>
                 <p>จัดการข้อมูล ผู้ใช้งาน ทั้งหมดที่มีในฐานข้อมูล</p>
             </blockquote>
-            <table class="table table-striped table-hover" id="tbl_list" style="width: 960px">
+            <form action="#" class="form-inline form-actions">
+
+                <label for="txt_query">ค้นหา</label>
+                <div class="input-append">
+                    <input class="input-xxlarge" id="txt_query" type="text" placeholder="พิมพ์ชื่อ, รหัสผู้ใช้งาน หรือ ปล่อยว่างแสดงทั้งหมด...">
+                    <button class="btn btn-info" type="button" id="btn_search">
+                        <i class="icon-search icon-white"></i> ค้นหา
+                    </button>
+                </div>
+
+				<a href="javascript:void(0);" class="btn btn-success" id="btn_new"><i class="icon-plus-sign icon-white"></i> เพิ่มผู้ใช้งาน</a>
+            </form>
+            <table class="table table-striped table-hover" id="tbl_list">
                 <thead>
                 <tr>
                     <th>ชื่อผู้ใช้งาน</th>
                     <th>ชื่อ - สกุล</th>
                     <th>หน่วยงาน</th>
                     <th>ประเภท</th>
+                    <th>ประเภทช่าง</th>
                     <th>สถานะ</th>
                     <th>#</th>
                 </tr>
@@ -29,9 +42,6 @@
             <div id="main_paging" class="pagination">
                 <ul></ul>
             </div>
-
-            <a href="javascript:void(0);" class="btn btn-success" id="btn_new"><i class="icon-plus-sign icon-white"></i> เพิ่มผู้ใช้งาน</a>
-
         </div>
     </div>
 </div>
@@ -70,6 +80,18 @@
                         <?php
                         foreach($user_types as $u)
                             echo '<option value="'.$u->type_code.'">' . $u->type_name . '</option>';
+                        ?>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="sl_tech_type">ประเภทช่าง</label>
+                <div class="controls">
+                    <select name="sl_tech_type" id="sl_tech_type">
+                        <?php
+                        $techtypes = get_technician_type_list();
+                        foreach($techtypes as $u)
+                            echo '<option value="'.$u->id.'">' . $u->name . '</option>';
                         ?>
                     </select>
                 </div>

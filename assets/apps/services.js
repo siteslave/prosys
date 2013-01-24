@@ -356,51 +356,61 @@ $(function(){
         });
     }
 
+    service.set_list_other = function(data){
+    	_.each(data.rows, function(v){
+    		var tech_more = v.tech_more > 0 ? 
+    				'<span class="badge badge-info">'+ v.tech_more +'</span> ' +
+					'<a href="javascript:void(0);" class="" data-name="btn_get_more_tech" ' +
+					'data-sv="'+v.service_code+'" title="รายชื่อช่างเพิ่มเติม"><i class="icon-user"></i></a>' 
+					: '';
+    		
+            $('#tbl_other_service_list > tbody').append(
+                '<tr>' +
+                    '<td>' + v.service_code + '</td>' +
+                    '<td>' + v.date_serv + '</td>' +
+                    '<td>' + clear_null(v.owner_name) + '</td>' +
+                    '<td>' + clear_null(v.product_name) + '</td>' +
+                    '<td>' + clear_null(v.cause) + '</td>' +
+                    '<td><span class="label label-info">' + clear_null(v.service_type) + '</span> <span class="label">' + clear_null(v.tech_type_name) + '</span> </td>' +
+                    '<td>' + tech_more + ' ' + clear_null(v.tech_name) + '</td>' +
+                    '<td>' + v.status + '</td>' +
+                    '<td>'+
+                    '<div class="btn-group dropup"> ' +
+                    '<a href="javascript:void(0);" class="btn btn primary"><i class="icon-th-list"></i></a>' +
+                    '<a class="btn btn primary dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);"> ' +
+                    '<span class="caret"></span> ' +
+                    '</a>' +
+                    '<ul class="dropdown-menu pull-right">' +
+                    '<li><a href="javascript:void(0);" data-name="btn_other_print" data-sv="'+v.service_code+'"><i class="icon-print"></i> พิมพ์ใบแจ้งซ่อม</a></li>' +
+                    '<li><a href="javascript:void(0);" data-name="btn_other_change_status" data-tech="'+ v.tech_name +'" data-sv="'+ v.service_code +'"><i class="icon-share"></i> เปลี่ยนสถานะการซ่อม</a></li>' +
+                    '<li><a href="javascript:void(0);" data-name="btn_other_assign_tech" data-status="'+ v.service_status +'" data-sv="'+ v.service_code +'"><i class="icon-user"></i> กำหนดช่างรับผิดชอบ</a></li>' +
+
+                    '<li><a href="javascript:void(0);" data-name="btn_other_do_service" data-id="'+ v.id +'"><i class="icon-edit"></i> บันทึกการซ่อม/อุปกรณ์</a></li>' +
+                    '<li><a href="javascript:void(0);" data-name="btn_other_do_result" data-sv="'+v.service_code+'" data-id="'+ v.id +'"><i class="icon-ok-sign"></i> สรุปผลการให้บริการ</a></li>' +
+                    '<li class="divider"></li>' +
+                    '<li class="dropdown-submenu pull-left">' +
+                    '<a tabindex="-1" href="#"><i class="icon-th-list"></i> ตัวเลือกอื่นๆ</a>' +
+                    '<ul class="dropdown-menu">' +
+                    '<li><a href="javascript:void(0);" data-name="btn_show_assign_type_other" data-sv="'+v.service_code+'"><i class="icon-star"></i> กำหนดประเภทงาน</a></li>' +
+                    '<li><a href="javascript:void(0);" data-name="btn_show_discharge" data-sv="'+v.service_code+'"><i class="icon-check"></i> จำหน่ายรายการ</a></li>' +
+                    '<li><a href="javascript:void(0);" data-name="btn_show_addmore_technician" data-sv="'+v.service_code+'"><i class="icon-user"></i> เพิ่มช่างผู้รับผิดชอบงาน</a></li>' +
+                    '<li><a href="javascript:void(0);" data-name="btn_other_remove" data-sv="'+v.service_code+'"><i class="icon-trash"></i> ลบรายการ</a></li>' +
+                    '</ul>' +
+                    '</li>' +
+                    '</ul></div>' +
+                    '</td>' +
+                    '</tr>'
+            );
+        });
+    };
+    
     service.get_service_by_other_list = function(err, data){
         $('#tbl_other_service_list > tbody').empty();
         if(err){
             $('#tbl_other_service_list > tbody').append('<tr><td colspan="9">ไม่พบรายการ</td></tr>');
         }else{
             if(_.size(data.rows)){
-                _.each(data.rows, function(v){
-                    $('#tbl_other_service_list > tbody').append(
-                        '<tr>' +
-                            '<td>' + v.service_code + '</td>' +
-                            '<td>' + v.date_serv + '</td>' +
-                            '<td>' + clear_null(v.owner_name) + '</td>' +
-                            '<td>' + clear_null(v.product_name) + '</td>' +
-                            '<td>' + clear_null(v.cause) + '</td>' +
-                            '<td>' + clear_null(v.service_type) + '</td>' +
-                            '<td>' + clear_null(v.tech_name)  + ' <a href="javascript:void(0);" class="btn btn-info" data-name="btn_get_more_tech" data-sv="'+v.service_code+'" title="รายชื่อช่างเพิ่มเติม"><i class="icon-user icon-white"></i></a></td>' +
-                            '<td>' + v.status + '</td>' +
-                            '<td>'+
-                            '<div class="btn-group dropup"> ' +
-                            '<a href="javascript:void(0);" class="btn btn primary"><i class="icon-th-list"></i></a>' +
-                            '<a class="btn btn primary dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);"> ' +
-                            '<span class="caret"></span> ' +
-                            '</a>' +
-                            '<ul class="dropdown-menu pull-right">' +
-                            '<li><a href="javascript:void(0);" data-name="btn_other_print" data-sv="'+v.service_code+'"><i class="icon-print"></i> พิมพ์ใบแจ้งซ่อม</a></li>' +
-                            '<li><a href="javascript:void(0);" data-name="btn_other_change_status" data-tech="'+ v.tech_name +'" data-sv="'+ v.service_code +'"><i class="icon-share"></i> เปลี่ยนสถานะการซ่อม</a></li>' +
-                            '<li><a href="javascript:void(0);" data-name="btn_other_assign_tech" data-status="'+ v.service_status +'" data-sv="'+ v.service_code +'"><i class="icon-user"></i> กำหนดช่างรับผิดชอบ</a></li>' +
-
-                            '<li><a href="javascript:void(0);" data-name="btn_other_do_service" data-id="'+ v.id +'"><i class="icon-edit"></i> บันทึกการซ่อม/อุปกรณ์</a></li>' +
-                            '<li><a href="javascript:void(0);" data-name="btn_other_do_result" data-sv="'+v.service_code+'" data-id="'+ v.id +'"><i class="icon-ok-sign"></i> สรุปผลการให้บริการ</a></li>' +
-                            '<li class="divider"></li>' +
-                            '<li class="dropdown-submenu pull-left">' +
-                            '<a tabindex="-1" href="#"><i class="icon-th-list"></i> ตัวเลือกอื่นๆ</a>' +
-                            '<ul class="dropdown-menu">' +
-                            '<li><a href="javascript:void(0);" data-name="btn_show_assign_type_other" data-sv="'+v.service_code+'"><i class="icon-star"></i> กำหนดประเภทงาน</a></li>' +
-                            '<li><a href="javascript:void(0);" data-name="btn_show_discharge" data-sv="'+v.service_code+'"><i class="icon-check"></i> จำหน่ายรายการ</a></li>' +
-                            '<li><a href="javascript:void(0);" data-name="btn_show_addmore_technician" data-sv="'+v.service_code+'"><i class="icon-user"></i> เพิ่มช่างผู้รับผิดชอบงาน</a></li>' +
-                            '<li><a href="javascript:void(0);" data-name="btn_other_remove" data-sv="'+v.service_code+'"><i class="icon-trash"></i> ลบรายการ</a></li>' +
-                            '</ul>' +
-                            '</li>' +
-                            '</ul></div>' +
-                            '</td>' +
-                            '</tr>'
-                    );
-                });
+                service.set_list_other(data);
             }else{
                 $('#tbl_other_service_list > tbody').append('<tr><td colspan="9">ไม่พบรายการ</td></tr>');
             }
@@ -414,47 +424,7 @@ $(function(){
             $('#tbl_other_service_list > tbody').append('<tr><td colspan="9">ไม่พบรายการ</td></tr>');
         }else{
             if(_.size(data.rows)){
-                _.each(data.rows, function(v){
-                    $('#tbl_other_service_list > tbody').append(
-                        '<tr>' +
-                            '<td>' + v.service_code + '</td>' +
-                            '<td>' + v.date_serv + '</td>' +
-                            '<td>' + clear_null(v.owner_name) + '</td>' +
-                            '<td>' + clear_null(v.product_name) + '</td>' +
-                            '<td>' + clear_null(v.cause) + '</td>' +
-                            '<td>' + clear_null(v.service_type) + '</td>' +
-                            '<td>' + clear_null(v.tech_name)  + ' <a href="javascript:void(0);" class="btn btn-info" data-name="btn_get_more_tech" data-sv="'+v.service_code+'" title="รายชื่อช่างเพิ่มเติม"><i class="icon-user icon-white"></i></a></td>' +
-                            '<td>' + clear_null(v.status) + '</td>' +
-                            '<td>'+
-                            '<div class="btn-group dropup"> ' +
-                            '<a href="javascript:void(0);" class="btn btn primary"><i class="icon-th-list"></i></a>' +
-                            '<a class="btn btn primary dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);"> ' +
-                            '<span class="caret"></span> ' +
-                            '</a>' +
-                            '<ul class="dropdown-menu pull-right">' +
-                            '<li><a href="javascript:void(0);" data-name="btn_other_print" data-sv="'+v.service_code+'"><i class="icon-print"></i> พิมพ์ใบแจ้งซ่อม</a></li>' +
-                            '<li><a href="javascript:void(0);" data-name="btn_other_service_detail" data-sv="' + v.service_code + '"><i class="icon-info-sign"></i> ข้อมูลการแจ้งซ่อม</a></li>' +
-                            '<li><a href="javascript:void(0);" data-name="btn_other_change_status" data-tech="'+ v.tech_name +'" data-sv="'+ v.service_code +'"><i class="icon-share"></i> เปลี่ยนสถานะการซ่อม</a></li>' +
-                            '<li><a href="javascript:void(0);" data-name="btn_other_assign_tech" data-status="'+ v.service_status +'" data-sv="'+ v.service_code +'"><i class="icon-user"></i> กำหนดช่างรับผิดชอบ</a></li>' +
-
-                            '<li><a href="javascript:void(0);" data-name="btn_other_do_service" data-id="'+ v.id +'"><i class="icon-edit"></i> บันทึกการซ่อม/อุปกรณ์</a></li>' +
-                            '<li><a href="javascript:void(0);" data-name="btn_other_do_result" data-sv="'+v.service_code+'" data-id="'+ v.id +'"><i class="icon-ok-sign"></i> สรุปผลการให้บริการ</a></li>' +
-                            '<li class="divider"></li>' +
-                            
-                            '<li class="dropdown-submenu pull-left">' +
-                            '<a tabindex="-1" href="#"><i class="icon-th-list"></i> ตัวเลือกอื่นๆ</a>' +
-                            '<ul class="dropdown-menu">' +
-                            '<li><a href="javascript:void(0);" data-name="btn_show_assign_type_other" data-sv="'+v.service_code+'"><i class="icon-star"></i> กำหนดประเภทงาน</a></li>' +
-                            '<li><a href="javascript:void(0);" data-name="btn_show_discharge" data-sv="'+v.service_code+'"><i class="icon-check"></i> จำหน่ายรายการ</a></li>' +
-                            '<li><a href="javascript:void(0);" data-name="btn_show_addmore_technician" data-sv="'+v.service_code+'"><i class="icon-user"></i> เพิ่มช่างผู้รับผิดชอบงาน</a></li>' +
-                            '<li><a href="javascript:void(0);" data-name="btn_other_remove" data-sv="'+v.service_code+'"><i class="icon-trash"></i> ลบรายการ</a></li>' +
-                            '</ul>' +
-                            '</li>' +
-                            '</ul></div>' +
-                            '</td>' +
-                            '</tr>'
-                    );
-                });
+                service.set_list_other(data);
             }else{
                 $('#tbl_other_service_list > tbody').append('<tr><td colspan="9">ไม่พบรายการ</td></tr>');
             }
@@ -821,52 +791,61 @@ $(function(){
         });
     };
 
-
+    service.set_list_main = function(data){
+    	 _.each(data.rows, function(v){
+    		 
+     		var tech_more = v.tech_more > 0 ? 
+    				'<span class="badge badge-info">'+ v.tech_more +'</span> ' +
+					'<a href="javascript:void(0);" class="" data-name="btn_get_more_tech" ' +
+					'data-sv="'+v.service_code+'" title="รายชื่อช่างเพิ่มเติม"><i class="icon-user"></i></a>' 
+					: '';
+     		
+             $('#tbl_code_service_list > tbody').append(
+                 '<tr>' +
+                     '<td>' + v.service_code + '</td>' +
+                     '<td>' + v.date_serv + '</td>' +
+                     '<td>' + v.product_code + '</td>' +
+                     '<td>' + v.product_name + '</td>' +
+                     '<td>' + v.owner_name + '</td>' +
+                     '<td>' + v.cause + '</td>' +
+                     '<td><span class="label label-info">' + clear_null(v.service_type) + '</span> <span class="label">' + clear_null(v.tech_type_name) + '</span> </td>' +
+                     '<td>' + tech_more + ' ' + v.tech_name + ' </td>' +
+                     '<td>' + v.status + '</td>' +
+                     '<td>' +
+                     '<div class="btn-group dropup"> ' +
+                     '<a href="javascript:void(0);" class="btn btn primary"><i class="icon-th-list"></i></a>' +
+                     '<a class="btn btn primary dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);"> ' +
+                     '<span class="caret"></span> ' +
+                     '</a>' +
+                     '<ul class="dropdown-menu pull-right">' +
+                     '<li><a href="javascript:void(0);" data-name="btn_code_print" data-sv="'+v.service_code+'"><i class="icon-print"></i> พิมพ์ใบแจ้งซ่อม</a></li>' +
+                     '<li><a href="javascript:void(0);" data-name="btn_regcode_change_status" data-tech="'+ v.tech_user_id +'" data-sv="'+ v.service_code +'"><i class="icon-share"></i> เปลี่ยนสถานะการซ่อม</a></li>' +
+                     '<li><a href="javascript:void(0);" data-name="btn_regcode_assign_tech" data-status="'+ v.service_status +'" data-sv="'+ v.service_code +'"><i class="icon-user"></i> กำหนดช่างรับผิดชอบ</a></li>' +
+                     '<li><a href="javascript:void(0);" data-name="btn_do_service" data-id="'+ v.id +'"><i class="icon-edit"></i> บันทึกการซ่อม/อุปกรณ์</a></li>' +
+                     '<li><a href="javascript:void(0);" data-name="btn_do_result" data-sv="'+v.service_code+'" data-id="'+ v.id +'"><i class="icon-ok-sign"></i> สรุปผลการให้บริการ</a></li>' +
+                     '<li class="divider"></li>' +
+                     '<li class="dropdown-submenu pull-left">' +
+                     '<a tabindex="-1" href="#"><i class="icon-th-list"></i> ตัวเลือกอื่นๆ</a>' +
+                     '<ul class="dropdown-menu">' +
+                     '<li><a href="javascript:void(0);" data-name="btn_show_assign_type_main" data-sv="'+v.service_code+'"><i class="icon-star"></i> กำหนดประเภทงาน</a></li>' +
+                     '<li><a href="javascript:void(0);" data-name="btn_show_discharge" data-sv="'+v.service_code+'"><i class="icon-check"></i> จำหน่ายรายการ</a></li>' +
+                     '<li><a href="javascript:void(0);" data-name="btn_show_addmore_technician" data-sv="'+v.service_code+'"><i class="icon-user"></i> เพิ่มช่างผู้รับผิดชอบงาน</a></li>' +
+                     '<li><a href="javascript:void(0);" data-name="btn_do_remove" data-sv="'+v.service_code+'"><i class="icon-trash"></i> ลบรายการ</a></li>' +
+                     '</ul>' +
+                     '</li>' +
+                     '</ul></div>' +
+                     '</td>' +
+                     '</tr>'
+             );
+         });
+    };
     service.get_service_by_code_list = function(err, data){
         $('#tbl_code_service_list > tbody').empty();
         if(err){
             $('#tbl_code_service_list > tbody').append('<tr><td colspan="10">ไม่พบรายการ</td></tr>');
         }else{
             if(_.size(data.rows)){
-                _.each(data.rows, function(v){
-                    $('#tbl_code_service_list > tbody').append(
-                        '<tr>' +
-                            '<td>' + v.service_code + '</td>' +
-                            '<td>' + v.date_serv + '</td>' +
-                            '<td>' + v.product_code + '</td>' +
-                            '<td>' + v.product_name + '</td>' +
-                            '<td>' + v.owner_name + '</td>' +
-                            '<td>' + v.cause + '</td>' +
-                            '<td>' + clear_null(v.service_type) + '</td>' +
-                            '<td>' + v.tech_name + ' <a href="javascript:void(0);" class="btn btn-info" data-name="btn_get_more_tech" data-sv="'+v.service_code+'" title="รายชื่อช่างเพิ่มเติม"><i class="icon-user icon-white"></i></a></td>' +
-                            '<td>' + v.status + '</td>' +
-                            '<td>' +
-                            '<div class="btn-group dropup"> ' +
-                            '<a href="javascript:void(0);" class="btn btn primary"><i class="icon-th-list"></i></a>' +
-                            '<a class="btn btn primary dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);"> ' +
-                            '<span class="caret"></span> ' +
-                            '</a>' +
-                            '<ul class="dropdown-menu pull-right">' +
-                            '<li><a href="javascript:void(0);" data-name="btn_code_print" data-sv="'+v.service_code+'"><i class="icon-print"></i> พิมพ์ใบแจ้งซ่อม</a></li>' +
-                            '<li><a href="javascript:void(0);" data-name="btn_regcode_change_status" data-tech="'+ v.tech_user_id +'" data-sv="'+ v.service_code +'"><i class="icon-share"></i> เปลี่ยนสถานะการซ่อม</a></li>' +
-                            '<li><a href="javascript:void(0);" data-name="btn_regcode_assign_tech" data-status="'+ v.service_status +'" data-sv="'+ v.service_code +'"><i class="icon-user"></i> กำหนดช่างรับผิดชอบ</a></li>' +
-                            '<li><a href="javascript:void(0);" data-name="btn_do_service" data-id="'+ v.id +'"><i class="icon-edit"></i> บันทึกการซ่อม/อุปกรณ์</a></li>' +
-                            '<li><a href="javascript:void(0);" data-name="btn_do_result" data-sv="'+v.service_code+'" data-id="'+ v.id +'"><i class="icon-ok-sign"></i> สรุปผลการให้บริการ</a></li>' +
-                            '<li class="divider"></li>' +
-                            '<li class="dropdown-submenu pull-left">' +
-                            '<a tabindex="-1" href="#"><i class="icon-th-list"></i> ตัวเลือกอื่นๆ</a>' +
-                            '<ul class="dropdown-menu">' +
-                            '<li><a href="javascript:void(0);" data-name="btn_show_assign_type_main" data-sv="'+v.service_code+'"><i class="icon-star"></i> กำหนดประเภทงาน</a></li>' +
-                            '<li><a href="javascript:void(0);" data-name="btn_show_discharge" data-sv="'+v.service_code+'"><i class="icon-check"></i> จำหน่ายรายการ</a></li>' +
-                            '<li><a href="javascript:void(0);" data-name="btn_show_addmore_technician" data-sv="'+v.service_code+'"><i class="icon-user"></i> เพิ่มช่างผู้รับผิดชอบงาน</a></li>' +
-                            '<li><a href="javascript:void(0);" data-name="btn_do_remove" data-sv="'+v.service_code+'"><i class="icon-trash"></i> ลบรายการ</a></li>' +
-                            '</ul>' +
-                            '</li>' +
-                            '</ul></div>' +
-                            '</td>' +
-                            '</tr>'
-                    );
-                });
+               service.set_list_main(data);
             }else{
                 $('#tbl_code_service_list > tbody').append('<tr><td colspan="10">ไม่พบรายการ</td></tr>');
             }
@@ -1246,6 +1225,7 @@ $(function(){
     	var data = {};
     	
     	data.type = $('#sl_type').val();
+    	data.type_service = $('#sl_type_service').val();
     	data.user_id = $('#sl_type_user').val();
     	data.password = $('#txt_type_password').val();
     	data.sv = $('#txt_type_service_code').val();
@@ -1253,6 +1233,8 @@ $(function(){
     	if(!data.sv){
     		App.alert('ไม่พบรหัสรับซ่อม');
     	}else if(!data.type){
+    		App.alert('กรุณาระบุประเภทงาน');
+    	}else if(!data.type_service){
     		App.alert('กรุณาระบุประเภทงานซ่อม');
     	}else if(!data.user_id){
     		App.alert('กรุณาระบุชื่อผู้ใช้งาน');
@@ -1265,6 +1247,7 @@ $(function(){
     			}else{
     				App.alert('กำหนดประเภทงานเสร็จเรียบร้อยแล้ว');
     				service.modal.hide_service_type();
+    				service.get_regcode_status_list();
     			}
     		});
     	}
@@ -1274,6 +1257,7 @@ $(function(){
     	var data = {};
     	
     	data.type = $('#sl_type_other').val();
+    	data.type_service = $('#sl_type_service_other').val();
     	data.user_id = $('#sl_type_user_other').val();
     	data.password = $('#txt_type_password_other').val();
     	data.sv = $('#txt_type_service_code_other').val();
@@ -1281,6 +1265,8 @@ $(function(){
     	if(!data.sv){
     		App.alert('ไม่พบรหัสรับซ่อม');
     	}else if(!data.type){
+    		App.alert('กรุณาระบุประเภทงาน');
+    	}else if(!data.type_service){
     		App.alert('กรุณาระบุประเภทงานซ่อม');
     	}else if(!data.user_id){
     		App.alert('กรุณาระบุชื่อผู้ใช้งาน');
@@ -1293,6 +1279,7 @@ $(function(){
     			}else{
     				App.alert('กำหนดประเภทงานเสร็จเรียบร้อยแล้ว');
     				service.modal.hide_service_type_other();
+    				service.get_other_status_list();
     			}
     		});
     	}

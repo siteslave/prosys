@@ -9,11 +9,11 @@ class Products extends CI_Controller
         $username = $this->session->userdata('username');
 
         if(empty($username)) redirect(site_url('users/login'));
-        
+
         $user_type = $this->session->userdata('user_type');
-        
+
         if($user_type != '3') redirect(site_url('errors/access_denied'));
-        
+
 
         $this->load->model('Product_model', 'product');
     }
@@ -52,7 +52,7 @@ class Products extends CI_Controller
 
         render_json($json);
     }
-    
+
     public function index()
     {
         //$data['products'] = $this->product->get_list();
@@ -68,7 +68,7 @@ class Products extends CI_Controller
 
     public function search_list(){
         $query = $this->input->post('query');
-        
+
         $start = $this->input->post('start');
         $stop = $this->input->post('stop');
 
@@ -76,7 +76,7 @@ class Products extends CI_Controller
         $stop = empty($stop) ? 25 : $stop;
 
         $limit = (int) $stop - (int) $start;
-        
+
         if(empty($query)){
             $json = '{"success": false, "msg": "No query found."}';
         }else{
@@ -91,7 +91,7 @@ class Products extends CI_Controller
 
         render_json($json);
     }
-    
+
     public function search_total(){
 		$query = $this->input->post('query');
         $total = $this->product->search_total($query);
@@ -99,7 +99,7 @@ class Products extends CI_Controller
 
         render_json($json);
     }
-    
+
     public function search_filter(){
         $type_id = $this->input->post('type_id');
         $owner_id = $this->input->post('owner_id');
@@ -111,7 +111,7 @@ class Products extends CI_Controller
         $stop = empty($stop) ? 25 : $stop;
 
         $limit = (int) $stop - (int) $start;
-        
+
         if(empty($owner_id)){
             $json = '{"success": false, "msg": "No owner found."}';
         }else{
@@ -130,13 +130,13 @@ class Products extends CI_Controller
     public function search_filter_total(){
 		$type_id = $this->input->post('type_id');
         $owner_id = $this->input->post('owner_id');
-        
+
         $total = $this->product->search_filter_total($type_id, $owner_id);
         $json = '{"success": true, "total": '.$total.'}';
 
         render_json($json);
     }
-    
+
     public function save(){
 
         $data['code'] = $this->input->post('code');
@@ -154,11 +154,20 @@ class Products extends CI_Controller
             $json = '{"success": false, "msg": "No data for save."}';
         }else{
             //check duplicate product code
-            $duplicated = $this->product->check_duplicate($data['code']);
+            if(!empty($data['code'])){
+            	$duplicated = $this->product->check_duplicate($data['code']);
+            }else{
+            	$duplicated = FALSE;
+            }
+
             if($duplicated){
                 $json = '{"success": false, "msg": "รายการนี้มีอยู่แล้วกรุณาตรวจสอบทะเบียนครุภัณฑ์"}';
             }else{
                 //do save
+                if(empty($data['code'])){
+                	$data['code'] = generate_serial('PRODUCT');
+                }
+
                 $result = $this->product->save($data);
 
                 if($result){

@@ -138,4 +138,23 @@ class Admins extends CI_Controller
 
     	render_json($json);
     }
+
+    public function search(){
+    	$query = $this->input->post('query');
+    	if(empty($query)){
+    		$json = '{"success": false, "msg": "No query found."}';
+    	}else{
+    		$result = $this->admin->search($query);
+
+    		if($result){
+    			$rows = json_encode($result);
+    			$json = '{"success": true, "rows": '.$rows.'}';
+    		}else{
+    			$json = '{"success": false, "msg": "No result."}';
+    		}
+    	}
+
+    	render_json($json);
+    }
+
 }

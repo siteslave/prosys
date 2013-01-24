@@ -28,7 +28,7 @@ class Product_model extends CI_Model
         $result = $this->db->count_all_results('products');
         return $result;
     }
-    
+
     public function get_owner(){
         $result = $this->db->order_by('name')->get('owners')->result();
         return $result;
@@ -53,6 +53,24 @@ class Product_model extends CI_Model
     }
 
     public function search($query, $start, $limit){
+/*
+    	$sql = '
+    			select p.id, p.code, p.name as product_name, p.product_serial, p.purchase_price, p.purchase_date,
+    			b.name as brand_name, t.name as type_name, g.name as group_name, o.name as owner_name, s.name as supplier_name
+    			from products p
+    			left join product_brands b on b.id=p.brand_id
+    			left join product_models m on m.id=p.model_id
+    			left join product_types t on t.id=p.type_id
+    			left join product_groups g on g.id=t.group_id
+    			left join owners o on o.id=p.owner_id
+    			left join suppliers s on s.id=p.supplier_id
+    			where (p.code="'.$query.'" or p.name like "%'.$query.'%")
+    			order by p.name DESC';
+
+    	$rs = $this->db->query($sql)->result();
+    	return $rs;
+    	*/
+
         $result = $this->db
             ->select(array(
             'p.id', 'p.code', 'p.name as product_name', 'p.product_serial', 'p.purchase_price', 'p.purchase_date',
@@ -65,15 +83,16 @@ class Product_model extends CI_Model
             ->join('product_groups g', 'g.id=t.group_id', 'left')
             ->join('owners o', 'o.id=p.owner_id', 'left')
             ->join('suppliers s', 's.id=p.supplier_id', 'left')
-            ->where('p.code', $query)
+    	 	->where('(p.name LIKE "%'.$query.'%" OR p.code="'.$query.'")', null, false)
             ->order_by('p.name', 'DESC')
             ->limit($limit, $start)
             ->get('products p')
             ->result();
         return $result;
+
     }
     public function search_total($query){
-    	$rs = $this->db->where('code', $query)->count_all_results('products');
+    	$rs = $this->db->where('(name LIKE "%'.$query.'%" OR code="'.$query.'")', null, false)->count_all_results('products');
     	return $rs;
     }
     public function search_filter($type_id, $owner_id, $start, $limit){
@@ -97,7 +116,7 @@ class Product_model extends CI_Model
             ->result();
         return $result;
     }
-    
+
     public function search_filter_total($type_id, $owner_id){
     	$rs = $this->db
     		->where('type_id', $type_id)
@@ -105,7 +124,7 @@ class Product_model extends CI_Model
             ->count_all_results('products');
     	return $rs;
     }
-    
+
 
     public function check_duplicate($code){
         $result = $this->db->where('code', $code)->count_all_results('products');
