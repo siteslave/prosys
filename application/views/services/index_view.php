@@ -544,12 +544,12 @@
                 </div>
 
                 <div class="control-group">
-                    <label class="control-label" for="sl_type_other">ประเภทงานซ่อม</label>
+                    <label class="control-label" for="sl_type_other">ประเภทงาน</label>
                     <div class="controls">
                         <select id="sl_type_other">
                         	<option value="">---</option>
 	                        <?php
-	                        $rs = get_service_type_list();
+	                        	$rs = get_service_type_list();
 
 	                            foreach($rs as $r){
 	                                echo '<option value="'.$r->id.'">'.$r->name.'</option>';

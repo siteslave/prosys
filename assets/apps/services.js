@@ -390,7 +390,7 @@ $(function(){
                             '<li class="dropdown-submenu pull-left">' +
                             '<a tabindex="-1" href="#"><i class="icon-th-list"></i> ตัวเลือกอื่นๆ</a>' +
                             '<ul class="dropdown-menu">' +
-                            '<li><a href="javascript:void(0);" data-name="btn_show_assign_type_other" data-sv="'+v.service_code+'"><i class="icon-star"></i> กำหนดประเภทงานซ่อม</a></li>' +
+                            '<li><a href="javascript:void(0);" data-name="btn_show_assign_type_other" data-sv="'+v.service_code+'"><i class="icon-star"></i> กำหนดประเภทงาน</a></li>' +
                             '<li><a href="javascript:void(0);" data-name="btn_show_discharge" data-sv="'+v.service_code+'"><i class="icon-check"></i> จำหน่ายรายการ</a></li>' +
                             '<li><a href="javascript:void(0);" data-name="btn_show_addmore_technician" data-sv="'+v.service_code+'"><i class="icon-user"></i> เพิ่มช่างผู้รับผิดชอบงาน</a></li>' +
                             '<li><a href="javascript:void(0);" data-name="btn_other_remove" data-sv="'+v.service_code+'"><i class="icon-trash"></i> ลบรายการ</a></li>' +
@@ -444,7 +444,7 @@ $(function(){
                             '<li class="dropdown-submenu pull-left">' +
                             '<a tabindex="-1" href="#"><i class="icon-th-list"></i> ตัวเลือกอื่นๆ</a>' +
                             '<ul class="dropdown-menu">' +
-                            '<li><a href="javascript:void(0);" data-name="btn_show_assign_type_other" data-sv="'+v.service_code+'"><i class="icon-star"></i> กำหนดประเภทงานซ่อม</a></li>' +
+                            '<li><a href="javascript:void(0);" data-name="btn_show_assign_type_other" data-sv="'+v.service_code+'"><i class="icon-star"></i> กำหนดประเภทงาน</a></li>' +
                             '<li><a href="javascript:void(0);" data-name="btn_show_discharge" data-sv="'+v.service_code+'"><i class="icon-check"></i> จำหน่ายรายการ</a></li>' +
                             '<li><a href="javascript:void(0);" data-name="btn_show_addmore_technician" data-sv="'+v.service_code+'"><i class="icon-user"></i> เพิ่มช่างผู้รับผิดชอบงาน</a></li>' +
                             '<li><a href="javascript:void(0);" data-name="btn_other_remove" data-sv="'+v.service_code+'"><i class="icon-trash"></i> ลบรายการ</a></li>' +
@@ -856,7 +856,7 @@ $(function(){
                             '<li class="dropdown-submenu pull-left">' +
                             '<a tabindex="-1" href="#"><i class="icon-th-list"></i> ตัวเลือกอื่นๆ</a>' +
                             '<ul class="dropdown-menu">' +
-                            '<li><a href="javascript:void(0);" data-name="btn_show_assign_type_main" data-sv="'+v.service_code+'"><i class="icon-star"></i> กำหนดประเภทงานซ่อม</a></li>' +
+                            '<li><a href="javascript:void(0);" data-name="btn_show_assign_type_main" data-sv="'+v.service_code+'"><i class="icon-star"></i> กำหนดประเภทงาน</a></li>' +
                             '<li><a href="javascript:void(0);" data-name="btn_show_discharge" data-sv="'+v.service_code+'"><i class="icon-check"></i> จำหน่ายรายการ</a></li>' +
                             '<li><a href="javascript:void(0);" data-name="btn_show_addmore_technician" data-sv="'+v.service_code+'"><i class="icon-user"></i> เพิ่มช่างผู้รับผิดชอบงาน</a></li>' +
                             '<li><a href="javascript:void(0);" data-name="btn_do_remove" data-sv="'+v.service_code+'"><i class="icon-trash"></i> ลบรายการ</a></li>' +

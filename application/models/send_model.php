@@ -130,6 +130,7 @@ class Send_model extends CI_Model{
 				->set('company_id', $data['company_id'])
 				->set('send_date', to_mysql_date($data['send_date']))
 				->set('comment', $data['comment'])
+				->set('place', $data['place'])
 				->update('send_services');
 		return $rs;
 	}

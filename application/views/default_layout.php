@@ -101,6 +101,18 @@
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="icon-wrench"></i> เครื่องมือ
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="javascript:void(0);"><i class="icon-refresh"></i> ยกเลิกการจำหน่าย</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="icon-folder-open"></i> ข้อมูลพื้นฐาน
                             <b class="caret"></b>
                         </a>
@@ -126,17 +138,21 @@
                             </li>
 
                             <li>
-                                <a href="<?php echo site_url('models'); ?>"><i class="icon-search"></i> รุ่น (Models)</a>
+                                <a href="<?php echo site_url('models'); ?>"><i class="icon-th"></i> รุ่น (Models)</a>
                             </li>
                             <li class="divider"></li>
                             <li>
-                                <a href="<?php echo site_url('suppliers'); ?>"><i class="icon-search"></i> ทะเบียนบริษัท/ร้านค้า</a>
+                                <a href="<?php echo site_url('suppliers'); ?>"><i class="icon-home"></i> ทะเบียนบริษัท/ร้านค้า</a>
                             </li>
                             <li>
-                                <a href="<?php echo site_url('parts'); ?>"><i class="icon-search"></i> รายการอะไหล่ (Spare parts) </a>
+                                <a href="<?php echo site_url('parts'); ?>"><i class="icon-th-list"></i> รายการอะไหล่ (Spare parts) </a>
                             </li>
                             <li>
-                                <a href="<?php echo site_url('status'); ?>"><i class="icon-search"></i> สถานะงานซ่อม (Service status) </a>
+                                <a href="<?php echo site_url('status'); ?>"><i class="icon-refresh"></i> สถานะงานซ่อม (Service status) </a>
+                            </li>
+
+                            <li>
+                                <a href="<?php echo site_url('service_types'); ?>"><i class="icon-tags"></i> ประเภทงานซ่อม (Service types) </a>
                             </li>
                         </ul>
                     </li>

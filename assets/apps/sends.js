@@ -208,7 +208,6 @@ $(function(){
 		$('#txt_new_send_comment').val('');
 	}
 
-
 	//get list status
 	sends.set_list = function(err, data){
 		$('#tbl_list > tbody').empty();
@@ -240,7 +239,7 @@ $(function(){
                             '<li><a href="javascript:void(0);" data-name="btn_edit" data-id="'+ v.id +'" ' +
                             'data-send_code="' + v.send_code + '" data-service_code="'+ v.service_code +'" ' +
                             'data-send_date="'+ v.send_date +'" data-company_id="'+ v.company_id +'" data-company_name="'+ v.company_name +'" ' +
-                            'data-comment="'+ v.comment +'" data-product_code="'+ v.product_code +'" data-tech_name="'+v.tech_name+'"><i class="icon-edit"></i> แก้ไขข้อมูล</a></li>' +
+                            'data-comment="'+ v.comment +'" data-product_code="'+ v.product_code +'" data-tech_name="'+v.tech_name+'" data-place="'+v.place+'"><i class="icon-edit"></i> แก้ไขข้อมูล</a></li>' +
                             '<li><a href="javascript:void(0);" data-name="btn_get" data-send_code="'+ v.send_code +'" ' +
                             'data-id="'+ v.id +'" data-sv="'+ v.service_code +'" data-get_comment="'+ v.get_comment+'" data-get_date="'+ v.get_date+'"><i class="icon-share"></i> รับคืน</a></li>' +
                             '<li><a href="javascript:void(0);" data-name="btn_remove_get" data-id="'+ v.id +'" data-send_code="'+ v.send_code +'" ' +
@@ -375,9 +374,11 @@ $(function(){
 		items.change_status = $('#chk_new_send_change_status').attr('checked') ? '1' : '0',
 		items.company_id = $('#txt_new_service_company_id').val(),
 		items.service_code = $('#txt_new_service_code').val(),
-		items.send_date = $('#txt_send_date').val(),
+		items.send_date = $('#txt_new_send_date').val(),
 		items.comment = $('#txt_new_send_comment').val();
-
+		items.id = $('#txt_id').val();
+		items.place = $('#sl_new_send_place').val();
+		
 			if(!items.send_date){
 				App.alert('กรุณาระบุวันที่ส่งซ่อม');
 			}else if(!items.service_code){
@@ -392,6 +393,7 @@ $(function(){
 					}else{
 						App.alert('บันทึกรายการเสร็จเรียบร้อยแล้ว');
 						//get list
+						sends.get_list_status();
 						sends.modal.hide_new();
 					}
 				});
@@ -590,19 +592,20 @@ $(function(){
 		items.comment = $(this).attr('data-comment') == 'null' ? '-' : $(this).attr('data-comment');
 		items.product_code = $(this).attr('data-product_code');
 		items.tech_name = $(this).attr('data-tech_name');
+		items.place = $(this).attr('data-place');
 
 		//set data
 
-		$('#txt_edit_send_date').val(toJSDate(items.send_date));
-		$('#txt_edit_service_code').val(items.service_code);
-		$('#txt_edit_service_company_id').val(items.company_id);
-		$('#txt_edit_service_company_name').val(items.company_name);
-		$('#txt_edit_send_comment').val(items.comment);
-		$('#txt_update_id').val(items.id);
-		$('#txt_edit_send_code').val(items.send_code);
-		$('#txt_edit_username').val(items.tech_name);
-
-		sends.modal.show_update();
+		$('#txt_new_send_date').val(toJSDate(items.send_date));
+		$('#txt_new_service_code').val(items.service_code);
+		$('#txt_new_service_company_id').val(items.company_id);
+		$('#txt_new_service_company_name').val(items.company_name);
+		$('#txt_new_send_comment').val(items.comment);
+		$('#txt_id').val(items.id);
+		$('#txt_new_send_code').val(items.send_code);
+		$('#txt_new_username').val(items.tech_name);
+		$('#sl_new_send_place').val(items.place);
+		sends.modal.show_new();
 
 
 	});

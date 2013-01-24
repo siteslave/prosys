@@ -81,30 +81,41 @@ class Sends extends CI_Controller{
 	 */
 	public function save(){
 		$data = $this->input->post('data');
-
-		//check send exist
-		$ready = $this->send->check_ready($data['service_code']);
-		if(!$ready){
-			$json = '{"success": false, "msg": "รายการนี้ยังไม่มีการรับกลับคืน กรุณาตรวจสอบ"}';
-		}else{
-			$data['send_code'] = generate_serial('SEND_SERVICE', TRUE);
-			$data['send_date'] = to_mysql_date($data['send_date']);
-	        $data['user_id'] = $this->session->userdata('user_id');
-
-			$rs = $this->send->save($data);
+		if(!empty($data['id'])){
+			$rs = $this->send->update($data);
 			if($rs){
 				$this->service->user_id = $this->user_id;
-	            $detail = 'ส่งซ่อม -> ' . get_company_name($data['company_id']);
-	            $this->service->save_activities($data['service_code'], $detail);
-
-				if($data['change_status'] == '1'){
-					$detail = '	เปลี่ยนสถานะซ่อม -> ส่งซ่อม';
-	            	$this->service->save_activities($data['service_code'], $detail);
-					$this->service->change_service_status($data['service_code'], '5');
-				}
+				$detail = '	แก้ไขข้อมูล -> ส่งซ่อม';
+				$this->service->save_activities($data['service_code'], $detail);
 				$json = '{"success": true}';
 			}else{
-				$json = '{"success": false, "msg": "Can\'t save service."}';
+				$json = '{"success": false, "msg": "Can\t update data."}';
+			}
+		}else{
+			//check send exist
+			$ready = $this->send->check_ready($data['service_code']);
+			if(!$ready){
+				$json = '{"success": false, "msg": "รายการนี้ยังไม่มีการรับกลับคืน กรุณาตรวจสอบ"}';
+			}else{
+				$data['send_code'] = generate_serial('SEND_SERVICE', TRUE);
+				$data['send_date'] = to_mysql_date($data['send_date']);
+				$data['user_id'] = $this->session->userdata('user_id');
+
+				$rs = $this->send->save($data);
+				if($rs){
+					$this->service->user_id = $this->user_id;
+					$detail = 'ส่งซ่อม -> ' . get_company_name($data['company_id']);
+					$this->service->save_activities($data['service_code'], $detail);
+
+					if($data['change_status'] == '1'){
+						$detail = '	เปลี่ยนสถานะซ่อม -> ส่งซ่อม';
+						$this->service->save_activities($data['service_code'], $detail);
+						$this->service->change_service_status($data['service_code'], '5');
+					}
+					$json = '{"success": true}';
+				}else{
+					$json = '{"success": false, "msg": "Can\'t save service."}';
+				}
 			}
 		}
 
@@ -185,8 +196,7 @@ class Sends extends CI_Controller{
 		render_json($json);
 	}
 
-	public function update(){
-		$data = $this->input->post('data');
+	public function update($data){
 
 		if(empty($data)){
 			$json = '{"success": false, "msg": "No data for save."}';

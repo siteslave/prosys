@@ -12,7 +12,7 @@
             <blockquote>
                 <p>จัดการข้อมูล ผู้ใช้งาน ทั้งหมดที่มีในฐานข้อมูล</p>
             </blockquote>
-            <table class="table table-striped" id="tbl_list" style="width: 680px">
+            <table class="table table-striped table-hover" id="tbl_list" style="width: 960px">
                 <thead>
                 <tr>
                     <th>ชื่อผู้ใช้งาน</th>

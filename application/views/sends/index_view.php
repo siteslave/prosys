@@ -66,16 +66,16 @@
 <div class="modal hide fade" id="mdl_new">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>เพิ่มรายการ</h3>
+        <h3>เพิ่ม/แก้ไข รายการ</h3>
     </div>
     <div class="modal-body">
         <form action="#" class="form-horizontal">
             <input type="hidden" id="txt_id">
             <div class="control-group">
-                    <label class="control-label" for="txt_send_date">วันที่ส่งซ่อม</label>
+                    <label class="control-label" for="txt_new_send_date">วันที่ส่งซ่อม</label>
                     <div class="controls">
                         <div class='input-append date' id='datepicker'>
-                            <input class='input-small' disabled id='txt_send_date' type='text'>
+                            <input class='input-small' disabled id='txt_new_send_date' type='text'>
                             <span class='add-on'>
                               <i class='icon-th'></i>
                             </span>
@@ -115,18 +115,20 @@
 	            <div class="control-group">
 				  <label class="control-label" for="sl_new_send_place">ประเภท</label>
 				  <div class="controls">
-					<select>
+					<select id="sl_new_send_place">
 						<option value="1">ในจังหวัด</option>
 						<option value="2">นอกจังหวัด</option>
 					</select>
 				  </div>
 				</div>
+				<!--
 	            <div class="control-group">
 				  <label class="control-label" for="chk_new_send_change_status">เปลี่ยนสถานะ</label>
 				  <div class="controls">
 					<input type="checkbox" id="chk_new_send_change_status">
 				  </div>
 				</div>
+				-->
         </form>
     </div>
     <div class="modal-footer">
@@ -134,79 +136,6 @@
         <a href="#" class="btn btn-danger" data-dismiss="modal"><i class="icon-off icon-white"></i> ปิดหน้าต่าง</a>
     </div>
 </div>
-
-<!-- update -->
-<div class="modal hide fade" id="mdl_update">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>แก้ไขรายการ</h3>
-    </div>
-    <div class="modal-body">
-        <form action="#" class="form-horizontal">
-            <input type="hidden" id="txt_update_id">
-            <div class="control-group">
-                    <label class="control-label" for="txt_edit_send_date">วันที่ส่งซ่อม</label>
-                    <div class="controls">
-                        <div class='input-append date'>
-                            <input class='input-small' disabled id='txt_edit_send_date' type='text'>
-                            <span class='add-on'>
-                              <i class='icon-th'></i>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="control-group">
-	                <label class="control-label" for="txt_edit_send_code">เลขที่ใบส่งซ่อม</label>
-	                <div class="controls">
-	                    <div class="input-append">
-	                    <input class="input-xlarge uneditable-input" disabled="disabled" id="txt_edit_send_code" type="text" placeholder="...">
-	                </div>
-	                </div>
-	            </div>
-                <div class="control-group">
-	                <label class="control-label" for="txt_edit_service_code">เลขที่ใบรับซ่อม</label>
-	                <div class="controls">
-	                    <div class="input-append">
-	                    <input class="input-xlarge uneditable-input" disabled="disabled" id="txt_edit_service_code" type="text" placeholder="...">
-	                </div>
-	                </div>
-	            </div>
-
-                <div class="control-group">
-	                <label class="control-label" for="txt_edit_username">เจ้าหน้าที่</label>
-	                <div class="controls">
-	                    <div class="input-append">
-	                    <input class="input-xlarge uneditable-input" disabled="disabled" id="txt_edit_username" type="text" placeholder="...">
-	                </div>
-	                </div>
-	            </div>
-                <div class="control-group">
-	                <label class="control-label" for="txt_edit_service_company_name">สถานที่ส่งซ่อม</label>
-	                <div class="controls">
-	                    <div class="input-append">
-	                   	<input type="hidden" id="txt_edit_service_company_id">
-	                    <input class="input-xlarge uneditable-input" disabled="disabled" id="txt_edit_service_company_name" type="text" placeholder="สถานที่ส่งซ่อม">
-	                    <button class="btn btn-info" type="button" id="btn_edit_search_company">
-	                        <i class="icon-search icon-white"></i> ค้นหา
-	                    </button>
-	                </div>
-	                </div>
-	            </div>
-                <div class="control-group">
-	                <label class="control-label" for="txt_edit_send_comment">หมายเหตุ</label>
-	                <div class="controls">
-	                    <textarea class="input-xxlarge" rows="4" id="txt_edit_send_comment"></textarea>
-	                </div>
-	            </div>
-        </form>
-    </div>
-    <div class="modal-footer">
-        <a href="#" class="btn btn-success" id="btn_edit_save"><i class="icon-plus-sign icon-white"></i> บันทึกรายการ</a>
-        <a href="#" class="btn btn-danger" data-dismiss="modal"><i class="icon-off icon-white"></i> ปิดหน้าต่าง</a>
-    </div>
-</div>
-
-<!-- end update -->
 
 <!-- get -->
 <div class="modal hide fade" id="mdl_get">
