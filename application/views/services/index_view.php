@@ -45,6 +45,7 @@
                 <tr>
                     <th>เลขที่ใบรับซ่อม</th>
                     <th>วันที่แจ้ง</th>
+                    <th>เวลา</th>
                     <th>ความสำคัญ</th>
                     <th>เลขที่ครุภัณฑ์</th>
                     <th>รายการ</th>
@@ -58,6 +59,7 @@
                 </thead>
                 <tbody>
                 <tr>
+                    <td>...</td>
                     <td>...</td>
                     <td>...</td>
                     <td>...</td>
@@ -113,6 +115,7 @@
                 <tr>
                     <th>เลขที่ใบรับซ่อม</th>
                     <th>วันที่แจ้ง</th>
+                    <th>เวลา</th>
                     <th>ความสำคัญ</th>
                     <th>หน่วยงาน</th>
                     <th>รายการ</th>
@@ -125,6 +128,7 @@
                 </thead>
                 <tbody>
                 <tr>
+                	<td>...</td>
                 	<td>...</td>
                 	<td>...</td>
                     <td>...</td>
@@ -934,6 +938,49 @@
     </div>
     <div class="modal-footer">
         <a href="#" class="btn btn-success" id="btn_save_edit_service_other"><i class="icon-plus-sign icon-white"></i> บันทึกรายการ</a>
+        <a href="#" class="btn btn-danger" data-dismiss="modal"><i class="icon-off icon-white"></i> ปิดหน้าต่าง</a>
+    </div>
+</div>
+
+
+<div class="modal hide fade" id="mdl_show_items">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>รายการสั่งซื้ออะไหล่</h3>
+    </div>
+    <div class="modal-body">
+        <form action="#" class="form-inline well">
+            <label>เลขที่ใบแจ้งซ่อม</label>
+            <input type="text" class="input-medium uneditable-input" disabled="disabled" id="txt_items_sv">
+        </form>
+        <table class="table table-striped table-hover" id="tbl_item_list">
+            <thead>
+            <tr>
+                <th>ค่าใช้จ่าย/อุปกรณ์</th>
+                <th>ราคา</th>
+                <th>จำนวน</th>
+                <th>หน่วย</th>
+                <th>รวม (บาท)</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>...</td>
+                <td>...</td>
+                <td>...</td>
+                <td>...</td>
+                <td>...</td>
+                <td>...</td>
+            </tr>
+            </tbody>
+        </table>
+        <blockquote>
+            รวมเป็นเงิน <strong><span id="txt_bath_total"></span></strong> บาท
+        </blockquote>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn btn-info"><i class="icon-print icon-white"></i> พิมพ์รายการ</a>
         <a href="#" class="btn btn-danger" data-dismiss="modal"><i class="icon-off icon-white"></i> ปิดหน้าต่าง</a>
     </div>
 </div>

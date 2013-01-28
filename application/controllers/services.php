@@ -57,6 +57,7 @@ class Services extends CI_Controller
                 $obj->service_code = $r->service_code;
                 $obj->product_id = $r->product_id;
                 $obj->date_serv = to_thai_date($r->date_serv);
+                $obj->time_serv = $r->time_serv;
                 $obj->product_code = $r->product_code;
                 $obj->product_name = $r->product_name;
                 $obj->cause = $r->cause;
@@ -473,6 +474,7 @@ class Services extends CI_Controller
                 $obj->service_code = $r->service_code;
                 $obj->product_id = $r->product_id;
                 $obj->date_serv = to_thai_date($r->date_serv);
+                $obj->time_serv = $r->time_serv;
                 $obj->product_code = $r->product_code;
                 $obj->product_name = $r->product_name;
                 $obj->cause = $r->cause;
@@ -557,6 +559,7 @@ class Services extends CI_Controller
                 $obj->service_code = $r->service_code;
                 $obj->product_name = $r->product_name;
                 $obj->date_serv = to_thai_date($r->date_serv);
+                $obj->time_serv = $r->time_serv;
                 $obj->owner_name = $r->owner_name;
                 $obj->tech_name = empty($r->tech_name) ? '-' : $r->tech_name;
                 $obj->tech_user_id = $r->tech_user_id;
@@ -606,6 +609,7 @@ class Services extends CI_Controller
                 $obj->service_code = $r->service_code;
                 $obj->product_name = $r->product_name;
                 $obj->date_serv = to_thai_date($r->date_serv);
+                $obj->time_serv = $r->time_serv;
                 $obj->owner_name = $r->owner_name;
                 $obj->tech_name = empty($r->tech_name) ? '-' : $r->tech_name;
                 $obj->tech_user_id = $r->tech_user_id;
@@ -702,6 +706,7 @@ class Services extends CI_Controller
 	                $obj = new stdClass();
 	                $obj->service_code = $r->service_code;
 	                $obj->date_serv = to_thai_date($r->date_serv);
+                    $obj->time_serv = $r->time_serv;
 	                $obj->tech_name = empty($r->tech_name) ? '-' : $r->tech_name;
 	                $obj->cause = $r->cause;
 	                $obj->service_status = $r->service_status;

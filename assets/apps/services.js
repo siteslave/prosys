@@ -13,6 +13,14 @@ $(function(){
         hide_edit_service: function(){
             $('#mdl_edit_service_main').modal('hide');
         },
+        show_item: function(){
+            $('#mdl_show_items').modal({backdrop: 'static'}).css({
+                width: 880,
+                'margin-left': function () {
+                    return -($(this).width() / 2);
+                }
+            });
+        },
         show_edit_service_other: function(){
             $('#mdl_edit_service_other').modal({backdrop: 'static'}).css({
                 width: 880,
@@ -424,8 +432,58 @@ $(function(){
             App.ajax(url, params, function(err, data){
                 err ? cb(err) : cb(null, data);
             });
+        },
+
+        get_item: function(sv, cb){
+            var url = '/services/get_item',
+                params = {
+                    sv: sv
+                };
+
+            App.ajax(url, params, function(err, data){
+                err ? cb(err) : cb(null, data);
+            });
         }
 
+    };
+
+    service.get_item = function(sv)
+    {
+        $('#tbl_item_list > tbody').empty();
+        service.ajax.get_item(sv, function(err, data){
+            if(err){
+                App.alert(err);
+                $('#tbl_item_list > tbody').append(
+                    '<tr><td colspan="5">ไม่พบรายการ</td></tr>'
+                );
+            }else{
+                if(_.size(data.rows)){
+                    var sum_total = 0;
+                    _.each(data.rows, function(v){
+                        var total = v.qty * v.price;
+
+                        $('#tbl_item_list > tbody').append(
+                            '<tr>' +
+                                '<td>' + v.name + '</td>' +
+                                '<td>' + addCommas(v.price) + '</td>' +
+                                '<td>' + v.qty + '</td>' +
+                                '<td>' + clear_null(v.unit) + '</td>' +
+                                '<td>' + addCommas(total) + '</td>' +
+                                '</tr>'
+                        );
+
+                        sum_total += total;
+                    });
+
+                    $('#txt_bath_total').html(addCommas(sum_total));
+
+                }else{
+                    $('#tbl_item_list > tbody').append(
+                        '<tr><td colspan="5">ไม่พบรายการ</td></tr>'
+                    );
+                }
+            }
+        })
     };
 
     service.get_result = function(id, type){
@@ -451,6 +509,7 @@ $(function(){
                 '<tr>' +
                     '<td>' + v.service_code + '</td>' +
                     '<td>' + v.date_serv + '</td>' +
+                    '<td>' + v.time_serv + '</td>' +
                     '<td>' + clear_null(v.pri_name) + '</td>' +
                     '<td>' + clear_null(v.owner_name) + '</td>' +
                     '<td>' + clear_null(v.product_name) + '</td>' +
@@ -476,6 +535,7 @@ $(function(){
                     '<li class="dropdown-submenu pull-left">' +
                     '<a tabindex="-1" href="#"><i class="icon-th-list"></i> ตัวเลือกอื่นๆ</a>' +
                     '<ul class="dropdown-menu">' +
+                    '<li><a href="javascript:void(0);" data-name="btn_get_items" data-sv="'+v.service_code+'"><i class="icon-wrench"></i> ข้อมูลอะไหล่</a></li>' +
                     '<li><a href="javascript:void(0);" data-name="btn_other_edit_service" data-sv="'+v.service_code+'"><i class="icon-edit"></i> แก้ไขใบแจ้งซ่อม</a></li>' +
                     '<li><a href="javascript:void(0);" data-name="btn_show_assign_type_other" data-sv="'+v.service_code+'"><i class="icon-star"></i> กำหนดประเภทงาน</a></li>' +
                     '<li><a href="javascript:void(0);" data-name="btn_show_discharge" data-sv="'+v.service_code+'"><i class="icon-check"></i> จำหน่ายรายการ</a></li>' +
@@ -493,12 +553,12 @@ $(function(){
     service.get_service_by_other_list = function(err, data){
         $('#tbl_other_service_list > tbody').empty();
         if(err){
-            $('#tbl_other_service_list > tbody').append('<tr><td colspan="10">ไม่พบรายการ</td></tr>');
+            $('#tbl_other_service_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
         }else{
             if(_.size(data.rows)){
                 service.set_list_other(data);
             }else{
-                $('#tbl_other_service_list > tbody').append('<tr><td colspan="10">ไม่พบรายการ</td></tr>');
+                $('#tbl_other_service_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
             }
         }
 
@@ -890,6 +950,7 @@ $(function(){
                  '<tr>' +
                      '<td>' + v.service_code + '</td>' +
                      '<td>' + v.date_serv + '</td>' +
+                     '<td>' + v.time_serv + '</td>' +
                      '<td>' + clear_null(v.pri_name) + '</td>' +
                      '<td>' + v.product_code + '</td>' +
                      '<td>' + v.product_name + '</td>' +
@@ -915,6 +976,7 @@ $(function(){
                      '<li class="dropdown-submenu pull-left">' +
                      '<a tabindex="-1" href="#"><i class="icon-th-list"></i> ตัวเลือกอื่นๆ</a>' +
                      '<ul class="dropdown-menu">' +
+                     '<li><a href="javascript:void(0);" data-name="btn_get_items" data-sv="'+v.service_code+'"><i class="icon-wrench"></i> ข้อมูลอะไหล่</a></li>' +
                      '<li><a href="javascript:void(0);" data-name="btn_edit_service" data-sv="'+v.service_code+'"><i class="icon-edit"></i> แก้ไขใบแจ้งซ่อม</a></li>' +
                      '<li><a href="javascript:void(0);" data-name="btn_show_assign_type_main" data-sv="'+v.service_code+'"><i class="icon-star"></i> กำหนดประเภทงาน</a></li>' +
                      '<li><a href="javascript:void(0);" data-name="btn_show_discharge" data-sv="'+v.service_code+'"><i class="icon-check"></i> จำหน่ายรายการ</a></li>' +
@@ -931,12 +993,12 @@ $(function(){
     service.get_service_by_code_list = function(err, data){
         $('#tbl_code_service_list > tbody').empty();
         if(err){
-            $('#tbl_code_service_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
+            $('#tbl_code_service_list > tbody').append('<tr><td colspan="12">ไม่พบรายการ</td></tr>');
         }else{
             if(_.size(data.rows)){
                service.set_list_main(data);
             }else{
-                $('#tbl_code_service_list > tbody').append('<tr><td colspan="11>ไม่พบรายการ</td></tr>');
+                $('#tbl_code_service_list > tbody').append('<tr><td colspan="12>ไม่พบรายการ</td></tr>');
             }
         }
 
@@ -1648,6 +1710,13 @@ $(function(){
         service.modal.hide_search_product();
     });
 
+    $('a[data-name="btn_get_items"]').live('click', function(){
+       var sv = $(this).attr('data-sv');
+        $('#txt_items_sv').val(sv);
+        service.get_item(sv);
+
+        service.modal.show_item();
+    });
     service.get_regcode_status_list();
 });
 

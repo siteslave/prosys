@@ -267,7 +267,7 @@ $(function(){
             if(err){
                 App.alert(err);
                 $('#tbl_item_list > tbody').append(
-                    '<tr><td colspan="5">ไม่พบรายการ</td></tr>'
+                    '<tr><td colspan="6">ไม่พบรายการ</td></tr>'
                 );
             }else{
                 if(_.size(data.rows)){
@@ -280,6 +280,7 @@ $(function(){
                                 '<td>' + v.name + '</td>' +
                                 '<td>' + addCommas(v.price) + '</td>' +
                                 '<td>' + v.qty + '</td>' +
+                                '<td>' + clear_null(v.unit) + '</td>' +
                                 '<td>' + addCommas(total) + '</td>' +
                                 '<td><div class="btn-group">' +
                                 '<a href="javascript:void(0);" class="btn" data-name="btn_edit_item" ' +
@@ -298,7 +299,7 @@ $(function(){
 
                 }else{
                     $('#tbl_item_list > tbody').append(
-                        '<tr><td colspan="5">ไม่พบรายการ</td></tr>'
+                        '<tr><td colspan="6">ไม่พบรายการ</td></tr>'
                     );
                 }
             }
