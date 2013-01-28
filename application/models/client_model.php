@@ -38,7 +38,9 @@ class Client_model extends CI_Model
             ->set('time_serv', date('H:i:s'))
             ->set('cause', $data['cause'])
             ->set('comment', $data['comment'])
+            ->set('contact_name', $data['contact_name'])
             ->set('service_status', '1')
+            ->set('priority_id', $data['priority'])
             ->insert('main_services');
 
         return $rs;
@@ -59,8 +61,10 @@ class Client_model extends CI_Model
             ->set('time_serv', date('H:i:s'))
             ->set('cause', $data['cause'])
             ->set('comment', $data['comment'])
+            ->set('contact_name', $data['contact_name'])
             ->set('service_status', '1')
 			->set('priority_id', $data['priority_id'])
+			->set('product_desc', $data['product_desc'])
             ->insert('other_services');
 
         return $rs;
@@ -94,11 +98,7 @@ class Client_model extends CI_Model
             ->get('main_services')
             ->row();
 
-        if($rs){
-            return $rs->service_status;
-        }else{
-            return '0';
-        }
+        return $rs ? $rs->service_status : '0';
 
     }
 
@@ -112,11 +112,7 @@ class Client_model extends CI_Model
             ->get('other_services')
             ->row();
 
-        if($rs){
-            return $rs->service_status;
-        }else{
-            return '0';
-        }
+        return $rs ? $rs->service_status : '0';
 
     }
 

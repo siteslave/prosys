@@ -11,12 +11,13 @@ class Service_model extends CI_Model
         $rs = $this->db
             ->select(array(
             'p.code as product_code', 'p.name as product_name', 'p.id as product_id', 'p.product_serial', 'p.purchase_date', 'o.name as owner_name',
-            'b.name as brand_name', 'm.name as model_name', 't.name as type_name', 's.*', 'u.fullname as tech_name'
+            'b.name as brand_name', 'm.name as model_name', 't.name as type_name', 's.*', 'u.fullname as tech_name', 'pt.name as pri_name'
         ))
             ->join('products p', 'p.id=s.product_id', 'left')
             ->join('product_brands b', 'b.id=p.brand_id', 'left')
             ->join('product_models m', 'm.id=p.model_id', 'left')
             ->join('product_types t', 't.id=p.type_id', 'left')
+            ->join('priorities pt', 'pt.id=s.priority_id', 'left')
             ->join('owners o', 'o.id=p.owner_id', 'left')
             ->join('users u', 'u.id=s.tech_user_id', 'left')
             ->where('s.service_status', $this->service_status)
@@ -58,19 +59,24 @@ class Service_model extends CI_Model
     }
     public function get_entries_detail($id){
         $rs = $this->db->where('s.id', $id)
-                ->select(array('s.*', 'p.code as product_code', 'p.name as product_name', 'o.name as owner_name', 'u.fullname as request_name'))
+                ->select(array(
+                                's.*', 'p.code as product_code', 'p.name as product_name', 'o.name as owner_name',
+                                'u.fullname as request_name', 'pt.name as pri_name'
+                ))
                 ->join('products p', 'p.id=s.product_id', 'left')
                 ->join('owners o', 'o.id=p.owner_id', 'left')
                 ->join('users u', 'u.id=s.report_user_id', 'left')
+                ->join('priorities pt', 'pt.id=s.priority_id', 'left')
                 ->get('main_services s')
                 ->row();
         return $rs;
     }
     public function get_entries_other_detail($id){
         $rs = $this->db->where('s.id', $id)
-                ->select(array('s.*', 'o.name as owner_name', 'u.fullname as request_name'))
+                ->select(array('s.*', 'o.name as owner_name', 'u.fullname as request_name', 'pt.name as pri_name'))
                 ->join('owners o', 'o.id=s.owner_id', 'left')
                 ->join('users u', 'u.id=s.report_user_id', 'left')
+                ->join('priorities pt', 'pt.id=s.priority_id', 'left')
                 ->get('other_services s')
                 ->row();
         return $rs;
@@ -136,7 +142,7 @@ class Service_model extends CI_Model
 
     public function get_item($sv){
         $rs = $this->db->where('s.service_code', $sv)
-            ->select(array('s.service_code', 's.price', 's.qty', 's.id', 'i.name'))
+            ->select(array('s.service_code', 's.price', 's.qty', 'i.unit', 's.id', 'i.name'))
             ->join('items i', 'i.id=s.item_id', 'left')
             ->get('service_items s')
             ->result();
@@ -153,7 +159,7 @@ class Service_model extends CI_Model
         $rs = $this->db
             ->select(array(
             'p.code as product_code', 'p.name as product_name', 'p.id as product_id', 'p.product_serial', 'p.purchase_date', 'o.name as owner_name',
-            'b.name as brand_name', 'm.name as model_name', 't.name as type_name', 's.*', 'u.fullname as tech_name'
+            'b.name as brand_name', 'm.name as model_name', 't.name as type_name', 's.*', 'u.fullname as tech_name', 'pt.name as pri_name'
         ))
             ->join('products p', 'p.id=s.product_id', 'left')
             ->join('product_brands b', 'b.id=p.brand_id', 'left')
@@ -161,6 +167,7 @@ class Service_model extends CI_Model
             ->join('product_types t', 't.id=p.type_id', 'left')
             ->join('owners o', 'o.id=p.owner_id', 'left')
             ->join('users u', 'u.id=s.tech_user_id', 'left')
+            ->join('priorities pt', 'pt.id=s.priority_id', 'left')
             ->where('s.service_code', $query)
             ->or_where('p.code', $query)
             ->limit($limit, $start)
@@ -195,10 +202,11 @@ class Service_model extends CI_Model
     {
         $rs = $this->db
                 ->select(array(
-                        'o.name as owner_name', 's.*', 'u.fullname as tech_name'
+                        'o.name as owner_name', 's.*', 'u.fullname as tech_name', 'pt.name as pri_name'
                     ))
                 ->join('owners o', 'o.id=s.owner_id', 'left')
                 ->join('users u', 'u.id=s.tech_user_id', 'left')
+                ->join('priorities pt', 'pt.id=s.priority_id', 'left')
                 ->where('s.service_code', $query)
                 ->limit($limit, $start)
                 ->order_by('s.date_serv', 'DESC')
@@ -214,10 +222,11 @@ class Service_model extends CI_Model
         if($status == '0'){
             $rs = $this->db
                 ->select(array(
-                        'o.name as owner_name', 's.*','u.fullname as tech_name'
+                        'o.name as owner_name', 's.*','u.fullname as tech_name', 'pt.name as pri_name'
                     ))
                 ->join('owners o', 'o.id=s.owner_id', 'left')
                 ->join('users u', 'u.id=s.tech_user_id', 'left')
+                ->join('priorities pt', 'pt.id=s.priority_id', 'left')
                 ->limit($limit, $start)
                 ->order_by('s.date_serv', 'DESC')
                 ->get('other_services s')
@@ -226,10 +235,11 @@ class Service_model extends CI_Model
         }else{
             $rs = $this->db
                 ->select(array(
-                        'o.name as owner_name', 's.*', 'u.fullname as tech_name'
+                        'o.name as owner_name', 's.*', 'u.fullname as tech_name', 'pt.name as pri_name'
                     ))
                 ->join('owners o', 'o.id=s.owner_id', 'left')
                 ->join('users u', 'u.id=s.tech_user_id', 'left')
+                ->join('priorities pt', 'pt.id=s.priority_id', 'left')
                 ->where('s.service_status', $status)
                 ->limit($limit, $start)
                 ->order_by('s.date_serv', 'DESC')
@@ -380,6 +390,51 @@ class Service_model extends CI_Model
     	return $rs;
     }
 
+    public function get_service_detail_main($sv)
+    {
+        $rs = $this->db
+            ->select(array('s.*', 'p.name as product_name', 'p.code as product_code'))
+            ->join('products p', 'p.id=s.product_id', 'left')
+            ->where('s.service_code', $sv)
+            ->limit(1)
+            ->get('main_services s')
+            ->row();
+        return $rs;
+    }
 
+    public function get_service_detail_other($sv)
+    {
+        $rs = $this->db
+            ->select(array('s.*', 'o.name as owner_name'))
+            ->join('owners o', 'o.id=s.owner_id', 'left')
+            ->where('s.service_code', $sv)
+            ->limit(1)
+            ->get('other_services s')
+            ->row();
+        return $rs;
+    }
+
+    public function save_edit_service_main($data)
+    {
+        $rs = $this->db->where('service_code', $data['sv'])
+            ->set('product_id', $data['product_id'])
+            ->set('contact_name', $data['contact_name'])
+            ->set('cause', $data['cause'])
+            ->update('main_services');
+
+        return $rs;
+    }
+    public function save_edit_service_other($data)
+    {
+        $rs = $this->db->where('service_code', $data['sv'])
+            ->set('product_name', $data['product_name'])
+            ->set('product_desc', $data['product_desc'])
+            ->set('contact_name', $data['contact_name'])
+            ->set('owner_id', $data['owner_id'])
+            ->set('cause', $data['cause'])
+            ->update('other_services');
+
+        return $rs;
+    }
 
 }

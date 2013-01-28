@@ -5,8 +5,9 @@
 
 <div class="row-fluid">
   <div class="span6">
-    <legend>สถิติการให้บริการของช่าง</legend>
+
     <form action="#" class="form-actions form-inline">
+    <legend>สถิติการให้บริการของช่าง</legend>
         <label for="txt_send_date">ตั้งแต่วันที่</label>
         <div class='input-append date' id='datepicker'>
             <input class='input-small' disabled id='txt_rpt_tech_sdate' type='text'>
@@ -21,7 +22,7 @@
               <i class='icon-th'></i>
             </span>
         </div>
-        <a href="javascript:void(0);" class="btn btn-info" id="btn_rpt_tech_get"><i class="icon-search icon-white"></i> แสดงข้อมูล</a>
+        <a href="javascript:void(0);" class="btn btn-info" id="btn_rpt_tech_get"><i class="icon-search icon-white"></i></a>
     </form>
     <table class="table table-striped table-hover" id="tbl_tech_service_count">
         <thead>
@@ -54,7 +55,7 @@
               <i class='icon-th'></i>
             </span>
         </div>
-        <a href="javascript:void(0);" class="btn btn-info" id="btn_rpt_status_get"><i class="icon-search icon-white"></i> แสดงข้อมูล</a>
+        <a href="javascript:void(0);" class="btn btn-info" id="btn_rpt_status_get"><i class="icon-search icon-white"></i></a>
     </form>
     <table class="table table-striped table-hover" id="tbl_status_count">
         <thead>

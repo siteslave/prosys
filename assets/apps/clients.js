@@ -372,12 +372,22 @@ $(function(){
         items.cause = $('#txt_regcode_cause').val();
         items.priority = $('#sl_regcode_priority').val();
         items.comment = $('#txt_regcode_comment').val();
+        items.contact_name = $('#txt_contact_name').val();
 
-        if(!items.product_id || !items.code){
+        if(!items.product_id || !items.code)
+        {
             App.alert('กรุณาเลือกครุภัณฑ์ที่ต้องการ');
-        }else if(!items.cause){
+        }
+        else if(!items.cause)
+        {
             App.alert('กรุณาระบุอาการแจ้งซ่อม');
-        }else{
+        }
+        else if(!items.contact_name)
+        {
+        	App.alert('กรุณาระบุชื่อผู้ส่งซ่อม');
+        }
+        else
+        {
             client.ajax.save_reg_product(items, function(err){
                 if(err){
                     App.alert(err);
@@ -400,21 +410,35 @@ $(function(){
         items.priority_id = $('#sl_other_priority').val();
         items.comment = $('#txt_other_comment').val();
         items.owner_id = $('#sl_other_owners').val();
+        items.contact_name = $('#txt_other_contact_name').val();
+        items.product_desc = $('#txt_other_product_desc').val();
         items.isupdate = $('#txt_other_isupdate').val();
         items.id = $('#txt_other_id').val();
         
 
-        if(!items.product_name || !items.product_name){
+        if(!items.product_name || !items.product_name)
+        {
             App.alert('กรุณาระบุ ชื่อของรายการที่แจ้งซ่อม');
-        }else if(!items.cause){
+        }
+        else if(!items.product_desc)
+        {
+            App.alert('กรุณาระบุรายละเอียดรายการที่ส่งซ่อม');
+        }
+        else if(!items.cause)
+        {
             App.alert('กรุณาระบุอาการแจ้งซ่อม');
-        }else if(items.owner){
+        }
+        else if(!items.owner_id)
+        {
         	App.alert('กรุณาเลือกหน่วยงาน');
-        }else{
-        	if(items.isupdate == '1'){
-        		
-        	}else{
-        		client.ajax.save_other_product(items, function(err){
+        }
+        else if(!items.contact_name)
+        {
+        	App.alert('กรุณาระบุชื่อผู้แจ้งซ่อม');
+        }
+        else
+        {
+        	client.ajax.save_other_product(items, function(err){
                 if(err){
                     App.alert(err);
                 }else{
@@ -426,7 +450,6 @@ $(function(){
                     
                 }
             });
-        	}
             
         }
     });

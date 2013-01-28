@@ -2,6 +2,39 @@ $(function(){
     var service = {};
 
     service.modal = {
+        show_edit_service: function(){
+            $('#mdl_edit_service_main').modal({backdrop: 'static'}).css({
+                width: 880,
+                'margin-left': function () {
+                    return -($(this).width() / 2);
+                }
+            });
+        },
+        hide_edit_service: function(){
+            $('#mdl_edit_service_main').modal('hide');
+        },
+        show_edit_service_other: function(){
+            $('#mdl_edit_service_other').modal({backdrop: 'static'}).css({
+                width: 880,
+                'margin-left': function () {
+                    return -($(this).width() / 2);
+                }
+            });
+        },
+        hide_edit_service_other: function(){
+            $('#mdl_edit_service_other').modal('hide');
+        },
+        show_search_product: function(){
+            $('#mdl_search_product').modal({backdrop: 'static'}).css({
+                width: 880,
+                'margin-left': function () {
+                    return -($(this).width() / 2);
+                }
+            });
+        },
+        hide_search_product: function(){
+            $('#mdl_search_product').modal('hide');
+        },
         show_change_status: function(){
             $('#mdl_regcode_change_status').modal({backdrop: 'static'}).css({
                 width: 480,
@@ -117,6 +150,36 @@ $(function(){
             var url = '/services/save_regcode_change_status',
                 params = {
                     data: data
+                };
+
+            App.ajax(url, params, function(err, data){
+                err ? cb(err) : cb(null, data);
+            });
+        },
+        save_edit_service_main: function(data, cb){
+            var url = '/services/save_edit_service_main',
+                params = {
+                    data: data
+                };
+
+            App.ajax(url, params, function(err, data){
+                err ? cb(err) : cb(null, data);
+            });
+        },
+        save_edit_service_other: function(data, cb){
+            var url = '/services/save_edit_service_other',
+                params = {
+                    data: data
+                };
+
+            App.ajax(url, params, function(err, data){
+                err ? cb(err) : cb(null, data);
+            });
+        },
+        search_reg_product: function(query, cb){
+            var url = '/services/search_reg_product',
+                params = {
+                    query: query
                 };
 
             App.ajax(url, params, function(err, data){
@@ -341,6 +404,26 @@ $(function(){
             App.ajax(url, params, function(err, data){
                 err ? cb(err) : cb(null, data);
             });
+        },
+        get_service_detail_main: function(sv, cb){
+            var url = '/services/get_service_detail_main',
+                params = {
+                    sv: sv
+                };
+
+            App.ajax(url, params, function(err, data){
+                err ? cb(err) : cb(null, data);
+            });
+        },
+        get_service_detail_other: function(sv, cb){
+            var url = '/services/get_service_detail_other',
+                params = {
+                    sv: sv
+                };
+
+            App.ajax(url, params, function(err, data){
+                err ? cb(err) : cb(null, data);
+            });
         }
 
     };
@@ -354,7 +437,7 @@ $(function(){
                 $('#txt_result').val(data.result);
             }
         });
-    }
+    };
 
     service.set_list_other = function(data){
     	_.each(data.rows, function(v){
@@ -368,6 +451,7 @@ $(function(){
                 '<tr>' +
                     '<td>' + v.service_code + '</td>' +
                     '<td>' + v.date_serv + '</td>' +
+                    '<td>' + clear_null(v.pri_name) + '</td>' +
                     '<td>' + clear_null(v.owner_name) + '</td>' +
                     '<td>' + clear_null(v.product_name) + '</td>' +
                     '<td>' + clear_null(v.cause) + '</td>' +
@@ -381,6 +465,7 @@ $(function(){
                     '<span class="caret"></span> ' +
                     '</a>' +
                     '<ul class="dropdown-menu pull-right">' +
+
                     '<li><a href="javascript:void(0);" data-name="btn_other_print" data-sv="'+v.service_code+'"><i class="icon-print"></i> พิมพ์ใบแจ้งซ่อม</a></li>' +
                     '<li><a href="javascript:void(0);" data-name="btn_other_change_status" data-tech="'+ v.tech_name +'" data-sv="'+ v.service_code +'"><i class="icon-share"></i> เปลี่ยนสถานะการซ่อม</a></li>' +
                     '<li><a href="javascript:void(0);" data-name="btn_other_assign_tech" data-status="'+ v.service_status +'" data-sv="'+ v.service_code +'"><i class="icon-user"></i> กำหนดช่างรับผิดชอบ</a></li>' +
@@ -391,6 +476,7 @@ $(function(){
                     '<li class="dropdown-submenu pull-left">' +
                     '<a tabindex="-1" href="#"><i class="icon-th-list"></i> ตัวเลือกอื่นๆ</a>' +
                     '<ul class="dropdown-menu">' +
+                    '<li><a href="javascript:void(0);" data-name="btn_other_edit_service" data-sv="'+v.service_code+'"><i class="icon-edit"></i> แก้ไขใบแจ้งซ่อม</a></li>' +
                     '<li><a href="javascript:void(0);" data-name="btn_show_assign_type_other" data-sv="'+v.service_code+'"><i class="icon-star"></i> กำหนดประเภทงาน</a></li>' +
                     '<li><a href="javascript:void(0);" data-name="btn_show_discharge" data-sv="'+v.service_code+'"><i class="icon-check"></i> จำหน่ายรายการ</a></li>' +
                     '<li><a href="javascript:void(0);" data-name="btn_show_addmore_technician" data-sv="'+v.service_code+'"><i class="icon-user"></i> เพิ่มช่างผู้รับผิดชอบงาน</a></li>' +
@@ -407,12 +493,12 @@ $(function(){
     service.get_service_by_other_list = function(err, data){
         $('#tbl_other_service_list > tbody').empty();
         if(err){
-            $('#tbl_other_service_list > tbody').append('<tr><td colspan="9">ไม่พบรายการ</td></tr>');
+            $('#tbl_other_service_list > tbody').append('<tr><td colspan="10">ไม่พบรายการ</td></tr>');
         }else{
             if(_.size(data.rows)){
                 service.set_list_other(data);
             }else{
-                $('#tbl_other_service_list > tbody').append('<tr><td colspan="9">ไม่พบรายการ</td></tr>');
+                $('#tbl_other_service_list > tbody').append('<tr><td colspan="10">ไม่พบรายการ</td></tr>');
             }
         }
 
@@ -421,12 +507,12 @@ $(function(){
     service.get_search_by_other_list = function(err, data){
         $('#tbl_other_service_list > tbody').empty();
         if(err){
-            $('#tbl_other_service_list > tbody').append('<tr><td colspan="9">ไม่พบรายการ</td></tr>');
+            $('#tbl_other_service_list > tbody').append('<tr><td colspan="10">ไม่พบรายการ</td></tr>');
         }else{
             if(_.size(data.rows)){
                 service.set_list_other(data);
             }else{
-                $('#tbl_other_service_list > tbody').append('<tr><td colspan="9">ไม่พบรายการ</td></tr>');
+                $('#tbl_other_service_list > tbody').append('<tr><td colspan="10">ไม่พบรายการ</td></tr>');
             }
         }
 
@@ -804,6 +890,7 @@ $(function(){
                  '<tr>' +
                      '<td>' + v.service_code + '</td>' +
                      '<td>' + v.date_serv + '</td>' +
+                     '<td>' + clear_null(v.pri_name) + '</td>' +
                      '<td>' + v.product_code + '</td>' +
                      '<td>' + v.product_name + '</td>' +
                      '<td>' + v.owner_name + '</td>' +
@@ -818,6 +905,7 @@ $(function(){
                      '<span class="caret"></span> ' +
                      '</a>' +
                      '<ul class="dropdown-menu pull-right">' +
+
                      '<li><a href="javascript:void(0);" data-name="btn_code_print" data-sv="'+v.service_code+'"><i class="icon-print"></i> พิมพ์ใบแจ้งซ่อม</a></li>' +
                      '<li><a href="javascript:void(0);" data-name="btn_regcode_change_status" data-tech="'+ v.tech_user_id +'" data-sv="'+ v.service_code +'"><i class="icon-share"></i> เปลี่ยนสถานะการซ่อม</a></li>' +
                      '<li><a href="javascript:void(0);" data-name="btn_regcode_assign_tech" data-status="'+ v.service_status +'" data-sv="'+ v.service_code +'"><i class="icon-user"></i> กำหนดช่างรับผิดชอบ</a></li>' +
@@ -827,6 +915,7 @@ $(function(){
                      '<li class="dropdown-submenu pull-left">' +
                      '<a tabindex="-1" href="#"><i class="icon-th-list"></i> ตัวเลือกอื่นๆ</a>' +
                      '<ul class="dropdown-menu">' +
+                     '<li><a href="javascript:void(0);" data-name="btn_edit_service" data-sv="'+v.service_code+'"><i class="icon-edit"></i> แก้ไขใบแจ้งซ่อม</a></li>' +
                      '<li><a href="javascript:void(0);" data-name="btn_show_assign_type_main" data-sv="'+v.service_code+'"><i class="icon-star"></i> กำหนดประเภทงาน</a></li>' +
                      '<li><a href="javascript:void(0);" data-name="btn_show_discharge" data-sv="'+v.service_code+'"><i class="icon-check"></i> จำหน่ายรายการ</a></li>' +
                      '<li><a href="javascript:void(0);" data-name="btn_show_addmore_technician" data-sv="'+v.service_code+'"><i class="icon-user"></i> เพิ่มช่างผู้รับผิดชอบงาน</a></li>' +
@@ -842,12 +931,12 @@ $(function(){
     service.get_service_by_code_list = function(err, data){
         $('#tbl_code_service_list > tbody').empty();
         if(err){
-            $('#tbl_code_service_list > tbody').append('<tr><td colspan="10">ไม่พบรายการ</td></tr>');
+            $('#tbl_code_service_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
         }else{
             if(_.size(data.rows)){
                service.set_list_main(data);
             }else{
-                $('#tbl_code_service_list > tbody').append('<tr><td colspan="10">ไม่พบรายการ</td></tr>');
+                $('#tbl_code_service_list > tbody').append('<tr><td colspan="11>ไม่พบรายการ</td></tr>');
             }
         }
 
@@ -1343,6 +1432,222 @@ $(function(){
     	});
     	//show_list_technician
     });
+
+    //edit service
+
+    service.get_service_detail_main = function(sv)
+    {
+        service.ajax.get_service_detail_main(sv, function(err, data){
+           if(err)
+           {
+               App.alert(err);
+           }
+           else
+           {
+                $('#txt_regcode_product_name').val(data.rows.product_name);
+                $('#txt_regcode_product_id').val(data.rows.product_id);
+                $('#txt_contact_name').val(data.rows.contact_name);
+                $('#txt_regcode_cause').val(data.rows.cause);
+                $('#txt_es_sv').val(sv);
+
+                service.modal.show_edit_service();
+           }
+        });
+    };
+
+    service.get_service_detail_other = function(sv)
+    {
+        service.ajax.get_service_detail_other(sv, function(err, data){
+            if(err)
+            {
+                App.alert(err);
+            }
+            else
+            {
+                $('#txt_est_product_name').val(data.rows.product_name);
+                $('#txt_est_product_desc').val(data.rows.product_desc);
+                $('#txt_est_contact_name').val(data.rows.contact_name);
+                $('#txt_est_cause').val(data.rows.cause);
+                $('#txt_est_sv').val(sv);
+                $('#sl_est_owners').val(data.rows.owner_id);
+
+                service.modal.show_edit_service_other();
+            }
+        });
+    };
+
+
+    service.clear_edit_service_main_form = function()
+    {
+        $('#txt_regcode_product_name').val('');
+        $('#txt_regcode_product_id').val('');
+        $('#txt_contact_name').val('');
+        $('#txt_regcode_cause').val('');
+        $('#txt_es_sv').val('');
+    };
+
+    service.clear_edit_service_other_form = function()
+    {
+        $('#txt_regcode_product_name').val('');
+        $('#txt_regcode_product_desc').val('');
+        $('#txt_contact_name').val('');
+        $('#txt_regcode_cause').val('');
+        $('#txt_es_sv').val('');
+    };
+
+    $('a[data-name="btn_edit_service"]').live('click', function(){
+       var sv = $(this).attr('data-sv');
+
+        //get detail
+
+        service.get_service_detail_main(sv);
+    });
+
+    $('a[data-name="btn_other_edit_service"]').live('click', function(){
+        var sv = $(this).attr('data-sv');
+        service.get_service_detail_other(sv);
+    });
+
+    $('#btn_save_edit_service_main').click(function(){
+        var data = {};
+
+        data.product_id = $('#txt_regcode_product_id').val();
+        data.product_name = $('#txt_regcode_product_name').val();
+        data.cause = $('#txt_regcode_cause').val();
+        data.contact_name = $('#txt_contact_name').val();
+        data.user_id = $('#sl_es_user_main').val();
+        data.password = $('#sl_es_password_main').val();
+        data.sv = $('#txt_es_sv').val();
+
+        if(!data.sv){
+            App.alert('ไม่พบรหัสรับซ่อม');
+        }else if(!data.product_id || !data.product_name){
+            App.alert('กรุณาระบรายการสินค้า');
+        }else if(!data.cause){
+            App.alert('กรุณาระบุอาการแจ้งซ่อม');
+        }else if(!data.contact_name){
+            App.alert('กรุณาระบุชื่อผู้ติดต่อ');
+        }else if(!data.user_id){
+            App.alert('กรุณาระบุชื่อผู้ใช้งาน');
+        }else if(!data.password){
+            App.alert('กรุณาระบุรหัสผ่าน');
+        }else{
+            service.ajax.save_edit_service_main(data, function(err){
+                if(err){
+                    App.alert(err);
+                }else{
+                    App.alert('แก้ไขข้อมูลเสร็จเรียบร้อยแล้ว');
+                    service.clear_edit_service_main_form();
+                    service.modal.hide_edit_service();
+                    service.get_regcode_status_list();
+                }
+            });
+        }
+    });
+
+
+    $('#btn_save_edit_service_other').click(function(){
+        var data = {};
+        data.product_desc = $('#txt_est_product_desc').val();
+        data.product_name = $('#txt_est_product_name').val();
+        data.cause = $('#txt_est_cause').val();
+        data.contact_name = $('#txt_est_contact_name').val();
+        data.owner_id = $('#sl_est_owners').val();
+        data.user_id = $('#sl_est_user_main').val();
+        data.password = $('#sl_est_password_main').val();
+        data.sv = $('#txt_est_sv').val();
+
+        if(!data.sv){
+            App.alert('ไม่พบรหัสรับซ่อม');
+        }else if(!data.product_name || !data.product_desc){
+            App.alert('กรุณาระบุรายการส่งซ่อม');
+        }else if(!data.cause){
+            App.alert('กรุณาระบุอาการแจ้งซ่อม');
+        }else if(!data.contact_name){
+            App.alert('กรุณาระบุชื่อผู้ติดต่อ');
+        }else if(!data.owner_id){
+            App.alert('กรุณาระบุหน่วยงาน');
+        }else if(!data.user_id){
+            App.alert('กรุณาระบุชื่อผู้ใช้งาน');
+        }else if(!data.password){
+            App.alert('กรุณาระบุรหัสผ่าน');
+        }else{
+            service.ajax.save_edit_service_other(data, function(err){
+                if(err){
+                    App.alert(err);
+                }else{
+                    App.alert('แก้ไขข้อมูลเสร็จเรียบร้อยแล้ว');
+                    service.clear_edit_service_other_form();
+                    service.modal.hide_edit_service_other();
+                    service.get_other_status_list();
+                }
+            });
+        }
+    });
+
+    $('#btn_regcode_search_product').click(function(){
+        service.modal.show_search_product();
+        service.modal.hide_edit_service();
+    });
+
+    $('#mdl_search_product').on('hidden', function(){
+       service.modal.show_edit_service();
+    });
+
+    $('#btn_regcode_do_search').click(function(){
+        var query = $('#txt_regcode_query_product').val();
+        if(!query || $.trim(query).length <= 2){
+            App.alert('กรุณาระบุคำที่ต้องการค้นหา มากกว่า 2 ตัวอักษรขึ้นไป');
+        }else{
+            //do search
+            $('#tbl_reg_search_product_result > tbody').empty();
+
+            service.ajax.search_reg_product(query, function(err, data){
+                if(err){
+                    App.alert(err);
+                    $('#tbl_reg_search_product_result > tbody').append(
+                        '<tr><td colspan="6">ไม่พบรายการ</td></tr>'
+                    );
+                }else{
+                    if(_.size(data.rows)){
+                        _.each(data.rows, function(v){
+                            var owner_name = $.trim(v.owner_name).length == 0 ? '-' : v.owner_name;
+                            var brand_name = $.trim(v.brand_name).length == 0 ? '-' : v.brand_name;
+                            var model_name = $.trim(v.model_name).length == 0 ? '-' : v.model_name;
+                            $('#tbl_reg_search_product_result > tbody').append(
+                                '<tr>' +
+                                    '<td>'+ v.code +'</td>' +
+                                    '<td>'+ v.name +'</td>' +
+                                    '<td>'+ owner_name +'</td>' +
+                                    '<td>'+ brand_name+'</td>' +
+                                    '<td>'+ model_name +'</td>' +
+                                    '<td><a href="javascript:void(0);" title="เลือกรายการนี้" data-name="btn_regcode_selected_product" class="btn btn-info" ' +
+                                    'data-id="'+ v.id +'" data-code="'+ v.code +'" data-product_name="'+v.name+'"> <i class="icon-ok icon-white"></i></a></td>' +
+                                    '</tr>'
+                            );
+                        });
+                    }else{
+                        $('#tbl_reg_search_product_result > tbody').append(
+                            '<tr><td colspan="6">ไม่พบรายการ</td></tr>'
+                        );
+                    }
+                }
+            });
+        }
+    });
+
+    $('a[data-name="btn_regcode_selected_product"]').live('click', function(){
+        var id = $(this).attr('data-id'),
+            code = $(this).attr('data-code'),
+            name = $(this).attr('data-product_name');
+
+        $('#txt_regcode_product_id').val(id);
+        //$('#txt_regcode_product_code').val(name);
+        $('#txt_regcode_product_name').val(name);
+
+        service.modal.hide_search_product();
+    });
+
     service.get_regcode_status_list();
 });
 

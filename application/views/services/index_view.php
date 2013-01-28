@@ -45,6 +45,7 @@
                 <tr>
                     <th>เลขที่ใบรับซ่อม</th>
                     <th>วันที่แจ้ง</th>
+                    <th>ความสำคัญ</th>
                     <th>เลขที่ครุภัณฑ์</th>
                     <th>รายการ</th>
                     <th>หน่วยงาน</th>
@@ -57,6 +58,7 @@
                 </thead>
                 <tbody>
                 <tr>
+                    <td>...</td>
                     <td>...</td>
                     <td>...</td>
                     <td>...</td>
@@ -111,6 +113,7 @@
                 <tr>
                     <th>เลขที่ใบรับซ่อม</th>
                     <th>วันที่แจ้ง</th>
+                    <th>ความสำคัญ</th>
                     <th>หน่วยงาน</th>
                     <th>รายการ</th>
                     <th>อาการแจ้ง</th>
@@ -122,6 +125,7 @@
                 </thead>
                 <tbody>
                 <tr>
+                	<td>...</td>
                 	<td>...</td>
                     <td>...</td>
                     <td>...</td>
@@ -698,4 +702,240 @@
             <a href="#" class="btn btn-danger" data-dismiss="modal"><i class="icon-off icon-white"></i> ปิดหน้าต่าง</a>
         </div>
    </div>
+
+<!-- Edit service -->
+
+<div class="modal hide fade" id="mdl_edit_service_main">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>แก้ไขรายการส่งซ่อม</h3>
+    </div>
+    <div class="modal-body">
+        <form class="form-horizontal">
+            <div class="control-group">
+                <label class="control-label" for="txt_es_sv">เลขที่ใบแจ้งซ่อม</label>
+                <div class="controls">
+                    <input type="text" class="input-xlarge uneditable-input" disabled="disabled" id="txt_es_sv">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="txt_regcode_product_name">รายการ</label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input type="hidden" id="txt_regcode_product_id">
+                        <input class="input-xlarge uneditable-input" disabled="disabled" id="txt_regcode_product_name" type="text">
+                        <button class="btn btn-info" type="button" id="btn_regcode_search_product"><i class="icon-search icon-white"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="txt_regcode_cause">ชื่อผู้แจ้ง/ติดต่อ</label>
+                <div class="controls">
+                    <input type="text" class="input-xlarge" id="txt_contact_name">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="txt_regcode_cause">รายละเอียด/อาการเสีย</label>
+                <div class="controls">
+                    <textarea class="input-xxlarge" rows="3" id="txt_regcode_cause"></textarea>
+                </div>
+            </div>
+            <!--
+            <div class="control-group">
+                <label class="control-label" for="txt_regcode_comment">หมายเหตุ</label>
+                <div class="controls">
+                    <textarea class="input-xxlarge" rows="3" id="txt_regcode_comment"></textarea>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="sl_regcode_priority">ความสำคัญ</label>
+                <div class="controls">
+                    <select id="sl_regcode_priority">
+                        <?php
+                        foreach($priority as $t)
+                            echo '<option value="'.$t->id.'">' . $t->name . '</option>';
+                        ?>
+                    </select>
+                </div>
+            </div>
+            -->
+
+            <legend>ยืนยัน (Confirmation)</legend>
+            <div class="control-group">
+                <label class="control-label" for="sl_es_user_main">ชื่อผู้ใช้งาน</label>
+                <div class="controls">
+                    <select id="sl_es_user_main">
+                        <option value="">---</option>
+                        <?php
+                        $users = get_admin_list();
+
+                        foreach($users as $u){
+                            echo '<option value="'.$u->id.'">'.$u->fullname.'</option>';
+                        }
+                        ?>
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="sl_es_password_main">รหัสผ่าน</label>
+                <div class="controls">
+                    <input type="password" id="sl_es_password_main">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn btn-success" id="btn_save_edit_service_main"><i class="icon-plus-sign icon-white"></i> บันทึกรายการ</a>
+        <a href="#" class="btn btn-danger" data-dismiss="modal"><i class="icon-off icon-white"></i> ปิดหน้าต่าง</a>
+    </div>
+</div>
+
+<!-- end edit service -->
+
+<div class="modal hide fade" id="mdl_search_product">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>ค้นหารายการ</h3>
+    </div>
+    <div class="modal-body">
+        <form action="#" class="form-actions form-search">
+            <div class="input-append">
+                <input type="text" id="txt_regcode_query_product" class="input-xxlarge search-query" placeholder="เลขครุภัณฑ์/ชื่อ... เช่น 6530-001-3110/00036, เสาน้ำเกลือ">
+                <button type="button" id="btn_regcode_do_search" class="btn btn-info">ค้นหา</button>
+            </div>
+        </form>
+
+        <table class="table table-striped table-hover" id="tbl_reg_search_product_result">
+            <thead>
+            <tr>
+                <th>เลขครุภัณฑ์</th>
+                <th>รายการ</th>
+                <th>หน่วยงาน</th>
+                <th>ยี่ห้อ</th>
+                <th>รุ่น</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>...</td>
+                <td>...</td>
+                <td>...</td>
+                <td>...</td>
+                <td>...</td>
+                <td>...</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn btn-danger" data-dismiss="modal"><i class="icon-off icon-white"></i> ปิดหน้าต่าง</a>
+    </div>
+</div>
+
+
+<div class="modal hide fade" id="mdl_edit_service_other">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>แก้ไขรายการส่งซ่อม</h3>
+    </div>
+    <div class="modal-body">
+        <form class="form-horizontal">
+            <div class="control-group">
+                <label class="control-label" for="txt_est_sv">เลขที่ใบแจ้งซ่อม</label>
+                <div class="controls">
+                    <input type="text" class="input-xlarge uneditable-input" disabled="disabled" id="txt_est_sv">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="txt_est_product_name">รายการ</label>
+                <div class="controls">
+                    <input type="text" class="input-xlarge" id="txt_est_product_name">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="txt_est_product_desc">รายละเอียดรายการแจ้งซ่อม</label>
+                <div class="controls">
+                    <input type="text" class="input-xlarge" id="txt_est_product_desc">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="sl_est_owners">หน่วยงาน</label>
+                <div class="controls">
+                    <select id="sl_est_owners">
+                        <option value="">-----</option>
+                        <?php
+                        $owners = get_owner_list();
+                        foreach($owners as $t)
+                            echo '<option value="'.$t->id.'">' . $t->name . '</option>';
+                        ?>
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="txt_est_contact_name">ชื่อผู้แจ้ง/ติดต่อ</label>
+                <div class="controls">
+                    <input type="text" class="input-xlarge" id="txt_est_contact_name">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="txt_est_cause">รายละเอียด/อาการเสีย</label>
+                <div class="controls">
+                    <textarea class="input-xxlarge" rows="3" id="txt_est_cause"></textarea>
+                </div>
+            </div>
+            <!--
+            <div class="control-group">
+                <label class="control-label" for="txt_regcode_comment">หมายเหตุ</label>
+                <div class="controls">
+                    <textarea class="input-xxlarge" rows="3" id="txt_regcode_comment"></textarea>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="sl_regcode_priority">ความสำคัญ</label>
+                <div class="controls">
+                    <select id="sl_regcode_priority">
+                        <?php
+            foreach($priority as $t)
+                echo '<option value="'.$t->id.'">' . $t->name . '</option>';
+            ?>
+                    </select>
+                </div>
+            </div>
+            -->
+
+            <legend>ยืนยัน (Confirmation)</legend>
+            <div class="control-group">
+                <label class="control-label" for="sl_est_user_main">ชื่อผู้ใช้งาน</label>
+                <div class="controls">
+                    <select id="sl_est_user_main">
+                        <option value="">---</option>
+                        <?php
+                        $users = get_admin_list();
+
+                        foreach($users as $u){
+                            echo '<option value="'.$u->id.'">'.$u->fullname.'</option>';
+                        }
+                        ?>
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="sl_est_password_main">รหัสผ่าน</label>
+                <div class="controls">
+                    <input type="password" id="sl_est_password_main">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn btn-success" id="btn_save_edit_service_other"><i class="icon-plus-sign icon-white"></i> บันทึกรายการ</a>
+        <a href="#" class="btn btn-danger" data-dismiss="modal"><i class="icon-off icon-white"></i> ปิดหน้าต่าง</a>
+    </div>
+</div>
+
 <script type="text/javascript" src="<?php echo base_url(); ?>assets/apps/services.js"></script>

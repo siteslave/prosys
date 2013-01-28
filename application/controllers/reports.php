@@ -19,6 +19,11 @@ class Reports extends CI_Controller {
 
     }
 
+    public function index()
+    {
+    	$this->layout->view('reports/index_view');
+    }
+
     public function get_service_total(){
 
         $users = $this->report->get_user_list();
@@ -78,20 +83,20 @@ class Reports extends CI_Controller {
 
         date_default_timezone_set('Asia/Bangkok');
 
-        $s = empty($s) ? date('Y-m-d') : to_mysql_date($s);
-        $e = empty($e) ? date('Y-m-d') : to_mysql_date($e);
+        $s = empty($s) ? date('Y-m-d') : $s;
+        $e = empty($e) ? date('Y-m-d') : $e;
 
 
         $status = get_status_list();
 
         $arr_result = array();
 
-        foreach($status as $s){
+        foreach($status as $r){
             $obj = new stdClass();
 
-            $obj->name = $s->name;
-            $obj->mtotal = $this->report->get_mstatus_total_by_date($s->id, $s, $e);
-            $obj->ototal = $this->report->get_ostatus_total_by_date($s->id, $s, $e);
+            $obj->name = $r->name;
+            $obj->mtotal = $this->report->get_mstatus_total_by_date($r->id, $s, $e);
+            $obj->ototal = $this->report->get_ostatus_total_by_date($r->id, $s, $e);
 
             array_push($arr_result, $obj);
 
@@ -109,10 +114,10 @@ class Reports extends CI_Controller {
         $e = $this->input->post('e');
 
 
-        date_default_timezone_set('Asia/Bangkok');
+        //date_default_timezone_set('Asia/Bangkok');
 
-        $s = empty($s) ? date('Y-m-d') : to_mysql_date($s);
-        $e = empty($e) ? date('Y-m-d') : to_mysql_date($e);
+        $s = empty($s) ? date('Y-m-d') : $s;
+        $e = empty($e) ? date('Y-m-d') : $e;
 
         $users = $this->report->get_user_list();
 
@@ -135,6 +140,39 @@ class Reports extends CI_Controller {
 
         render_json($json);
 
+    }
+
+    public function get_service_type_by_technician(){
+    	$user_id = $this->input->post('user_id');
+    	$s = $this->input->post('s');
+    	$e = $this->input->post('e');
+
+    	if(empty($user_id)){
+    		$json = '{"success": false, "msg": "No user id found."}';
+    	}else if(empty($s)){
+    		$json = '{"success": false, "msg": "กรุณาระบุวันที่เริ่มต้น"}';
+    	}else if(empty($e)){
+    		$json = '{"success": false, "msg": "กรุณาระบุวันที่สิ้นสุด"}';
+    	}else{
+
+    		$rec = get_type_of_service();
+    		$arr_result = array();
+
+    		foreach($rec as $r){
+    			$obj = new stdClass();
+    			$obj->type_name = get_type_name($r->id);
+    			$obj->total_m = $this->report->get_total_svt_main($user_id, $r->id, $s, $e);
+    			$obj->total_o = $this->report->get_total_svt_other($user_id, $r->id, $s, $e);
+
+    			array_push($arr_result, $obj);
+
+    		}
+
+    		$rows = json_encode($arr_result);
+    		$json = '{"success": true, "rows": '.$rows.'}';
+    	}
+
+    	render_json($json);
     }
 
     public function get_service_type_by_technician_main(){
@@ -239,4 +277,163 @@ class Reports extends CI_Controller {
     	render_json($json);
     }
 
+    public function get_tos(){
+    	$s = $this->input->post('s');
+    	$e = $this->input->post('e');
+
+    	if(empty($s))
+    	{
+    		$json = '{"success": false, "msg": "กรุณาระบุวันที่เริ่มต้น"}';
+    	}
+    	else if(empty($e))
+    	{
+    		$json = '{"success": false, "msg": "กรุณาระบุวันที่สิ้นสุด"}';
+    	}
+    	else
+    	{
+			$tos = get_type_of_service();
+
+			$arr_result = array();
+
+			foreach ($tos as $r)
+			{
+				$obj = new stdClass();
+				$obj->name = $r->name;
+				$obj->id = $r->id;
+				$obj->total_m = $this->report->get_tos_main($r->id, $s, $e);
+				$obj->total_o = $this->report->get_tos_other($r->id, $s, $e);
+				array_push($arr_result, $obj);
+			}
+
+			$rows = json_encode($arr_result);
+			$json = '{"success": true, "rows": '.$rows.'}';
+
+    	}
+
+    	render_json($json);
+    }
+
+    public function get_tos_status(){
+    	$s = $this->input->post('s');
+    	$e = $this->input->post('e');
+    	$id = $this->input->post('id');
+
+    	if(empty($s))
+    	{
+    		$json = '{"success": false, "msg": "กรุณาระบุวันที่เริ่มต้น"}';
+    	}
+    	else if(empty($e))
+    	{
+    		$json = '{"success": false, "msg": "กรุณาระบุวันที่สิ้นสุด"}';
+    	}
+    	else if(empty($id))
+    	{
+    		$json = '{"success": false, "msg": "ไม่พบรหัสประเภทงานซ่อม"}';
+    	}
+    	else
+    	{
+    		$status = get_status_list();
+
+    		$arr_result = array();
+
+    		foreach ($status as $r)
+    		{
+    			$obj = new stdClass();
+    			$obj->name = $r->name;
+    			$obj->total_m = $this->report->get_tos_main_status($id, $r->id, $s, $e);
+    			$obj->total_o = $this->report->get_tos_other_status($id, $r->id, $s, $e);
+    			array_push($arr_result, $obj);
+    		}
+
+    		$rows = json_encode($arr_result);
+    		$json = '{"success": true, "rows": '.$rows.'}';
+
+    	}
+
+    	render_json($json);
+    }
+
+    public function get_tos_svt(){
+    	$s = $this->input->post('s');
+    	$e = $this->input->post('e');
+    	$id = $this->input->post('id');
+
+    	if(empty($s))
+    	{
+    		$json = '{"success": false, "msg": "กรุณาระบุวันที่เริ่มต้น"}';
+    	}
+    	else if(empty($e))
+    	{
+    		$json = '{"success": false, "msg": "กรุณาระบุวันที่สิ้นสุด"}';
+    	}
+    	else if(empty($id))
+    	{
+    		$json = '{"success": false, "msg": "ไม่พบรหัสประเภทงานซ่อม"}';
+    	}
+    	else
+    	{
+    		$svt = get_service_type_list();
+
+    		$arr_result = array();
+
+    		foreach ($svt as $r)
+    		{
+    			$obj = new stdClass();
+    			$obj->name = $r->name;
+    			$obj->total_m = $this->report->get_tos_main_svt($id, $r->id, $s, $e);
+    			$obj->total_o = $this->report->get_tos_other_svt($id, $r->id, $s, $e);
+    			array_push($arr_result, $obj);
+    		}
+
+    		$rows = json_encode($arr_result);
+    		$json = '{"success": true, "rows": '.$rows.'}';
+
+    	}
+
+    	render_json($json);
+    }
+
+    public function idx_get_total()
+    {
+    	$data = $this->input->post('data');
+
+    	if(empty($data))
+    	{
+    		$json = '{"success": false, "msg": "ไม่พบเงื่อนไขการค้นหา"}';
+    	}
+    	else
+    	{
+    		if(empty($data['s']))
+    		{
+    			$json = '{"success": false, "msg": "กรุณาระบุวันที่เริ่มต้น"}';
+    		}
+    		else if(empty($data['e']))
+    		{
+    			$json = '{"success": false, "msg": "กรุณาระบุวันที่สิ้นสุด"}';
+    		}
+    		else
+    		{
+    			if($data['t'] == '1')
+    			{
+    				$rs = $this->report->get_total_list_all_main(to_mysql_date($data['s']), to_mysql_date($data['e']), $data['d'], $data['tos']);
+    			}
+    			else
+    			{
+    				$rs = $this->report->get_total_list_all_other(to_mysql_date($data['s']), to_mysql_date($data['e']), $data['d'], $data['tos']);
+    			}
+
+    			if($rs)
+    			{
+    				$rows = json_encode($rs);
+    				$json = '{"success": true, "rows": '.$rows.'}';
+    			}
+    			else
+    			{
+    				$json = '{"success": false, "msg": "ไม่พบข้อมูล"}';
+    			}
+    		}
+    	}
+
+    	render_json($json);
+    }
 }

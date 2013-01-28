@@ -124,36 +124,6 @@ $(function(){
    };
 
 
-   report.render_chart_tech = function(data){
-
-      var d = [];
-      var i = 0;
-
-      _.each(data.rows, function(v){
-        var total = v.total_m + v.total_o;
-
-        d[i] = {
-            'x': v.username,
-            'y': total
-        };
-
-        i++;
-       });
-
-      var data_chart = {
-          "xScale": "ordinal",
-          "yScale": "linear",
-          "main": [
-            {
-              "className": ".pizza",
-              "data": d
-            }
-          ]
-        };
-
-        var myChart = new xChart('bar', data_chart, '#div_chart');
-   }
-
    report.get_status_total = function(){
        report.ajax.get_status_total(function(err, data){
             $('#tbl_status_count > tbody').empty();

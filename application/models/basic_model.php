@@ -28,4 +28,9 @@ class Basic_model extends CI_Model
     	return $rs;
     }
 
+    public function get_owner_list(){
+        $rs = $this->db->get('owners')->result();
+        return $rs;
+    }
+
 }

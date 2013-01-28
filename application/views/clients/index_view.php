@@ -22,11 +22,15 @@
                         </div>
 
                     </div>
-                    <div class="offset5 span3">
-                        <button class="btn btn-primary" type="button" id="btn_regcode_new">
-                            <i class="icon-plus-sign icon-white"></i> เพิ่มรายการ
+                    <div class="offset4 span4">
+
+                        <button class="btn btn-info" type="button" id="btn_regcode_new">
+                            <i class="icon-plus-sign icon-white"></i> แจ้งซ่อม
                         </button>
-                        
+                        <a class="btn btn-primary" href="<?php echo site_url('clients/register_products'); ?>">
+                            <i class="icon-shopping-cart icon-white"></i> เพิ่มครุภัณฑ์
+                        </a>
+
                         <div class="btn-group pull-right">
 		                    <button class="btn btn-success" type="button"><i class="icon-th-large icon-white"></i> สถานะซ่อม</button>
 		                    <button class="btn btn-success dropdown-toggle" data-toggle="dropdown">
@@ -35,7 +39,7 @@
 		                    <ul class="dropdown-menu">
 		                    	<?php
 			                        $status = get_status_list();
-			
+
 			                        foreach($status as $s){
 			                            echo '<li><a href="javascript:void(0);" data-name="btn_code_get_status_list" data-id="'.$s->id.'">'.$s->name.'</a></li>';
 			                        }
@@ -73,7 +77,7 @@
                 <ul></ul>
             </div>
         </div>
-        
+
         <div class="tab-pane" id="tab2">
             <blockquote>
                 รายการที่แจ้งซ่อมทั้งหมด
@@ -88,10 +92,10 @@
                         </div>
                     </div>
                     <div class="offset5 span3">
-                        <button class="btn btn-primary" type="button" id="btn_other_new">
-                            <i class="icon-plus-sign icon-white"></i> เพิ่มรายการ
+                        <button class="btn btn-info" type="button" id="btn_other_new">
+                            <i class="icon-plus-sign icon-white"></i> แจ้งซ่อม
                         </button>
-                        
+
                         <div class="btn-group pull-right">
 		                    <button class="btn btn-success" type="button"><i class="icon-th-large icon-white"></i> สถานะซ่อม</button>
 		                    <button class="btn btn-success dropdown-toggle" data-toggle="dropdown">
@@ -100,14 +104,14 @@
 		                    <ul class="dropdown-menu">
 		                    	<?php
 			                        $status = get_status_list();
-			
+
 			                        foreach($status as $s){
 			                            echo '<li><a href="javascript:void(0);" data-name="btn_other_get_status_list" data-id="'.$s->id.'">'.$s->name.'</a></li>';
 			                        }
 			                    ?>
 		                    </ul>
 	                    </div>
-                    
+
                     </div>
                 </div>
             </form>
@@ -160,6 +164,12 @@
                 </div>
             </div>
             <div class="control-group">
+                <label class="control-label" for="txt_regcode_cause">ชื่อผู้แจ้ง/ติดต่อ</label>
+                <div class="controls">
+                    <input type="text" class="input-xlarge" id="txt_contact_name" value="<?php echo $this->session->userdata('fullname'); ?>">
+                </div>
+            </div>
+            <div class="control-group">
                 <label class="control-label" for="txt_regcode_cause">รายละเอียด/อาการเสีย</label>
                 <div class="controls">
                     <textarea class="input-xxlarge" rows="3" id="txt_regcode_cause"></textarea>
@@ -200,15 +210,22 @@
         <form class="form-horizontal">
         	<input type="hidden" id="txt_other_isupdate"/>
         	<input type="hidden" id="txt_other_id"/>
-            <div class="control-group">
-                <label class="control-label" for="txt_other_product_code">รายการ</label>
+            <div class="control-group error">
+                <label class="control-label" for="txt_other_product_name">รายการ</label>
                 <div class="controls">
                     <div class="input-append">
                         <input class="input-xlarge" id="txt_other_product_name" type="text">
                 	</div>
                	</div>
             </div>
-            <div class="control-group">
+            <div class="control-group success">
+                <label class="control-label" for="txt_other_product_desc">รายละเอียดรายการซ่อม</label>
+                <div class="controls">
+                    <input type="text" class="input-xlarge" id="txt_other_product_desc">
+                	<span class="label label-info">*หลอดไฟสั้น/ยาว/ตะเกียบ ฯลฯ</span>
+                </div>
+            </div>
+            <div class="control-group success">
                 <label class="control-label" for="sl_other_owners">หน่วยงาน</label>
                 <div class="controls">
                     <select id="sl_other_owners">
@@ -220,7 +237,13 @@
                     </select>
                 </div>
             </div>
-            <div class="control-group">
+            <div class="control-group success">
+                <label class="control-label" for="txt_other_contact_name">ชื่อผู้แจ้ง/ติดต่อ</label>
+                <div class="controls">
+                    <input type="text" class="input-xlarge" id="txt_other_contact_name" value="<?php echo $this->session->userdata('fullname'); ?>">
+                </div>
+            </div>
+            <div class="control-group success">
                 <label class="control-label" for="txt_other_cause">รายละเอียด/อาการเสีย</label>
                 <div class="controls">
                     <textarea class="input-xxlarge" rows="3" id="txt_other_cause"></textarea>

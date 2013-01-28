@@ -2,11 +2,11 @@
 class Prints extends CI_Controller {
 	public function __construct(){
 		parent::__construct();
-		
+
 		$this->load->model('Report_model', 'report');
 	}
-	
-	    
+
+
     public function print_main_service($sv=''){
     	if(!isset($sv) || empty($sv)){
     		show_error('No service found.', 404);
@@ -18,19 +18,19 @@ class Prints extends CI_Controller {
 	            $this->pdf->setPrintHeader(false);
 	            $this->pdf->setPrintFooter(false);
 	            $this->pdf->setTopMargin(5);
-	            
+
 	            // set document information
 	            $this->pdf->SetSubject('AA Service');
 	            $this->pdf->SetKeywords('AA Service');
-	            
+
 	            // add a page
 	            $this->pdf->AddPage();
-	            
+
 	            // print a line using Cell()
-	            
+
 	            /*select(array(
-	            	's.*', 'p.product_serial','p.code as product_code', 
-	            	'p.name as product_name', 'o.name as owner_name', 
+	            	's.*', 'p.product_serial','p.code as product_code',
+	            	'p.name as product_name', 'o.name as owner_name',
 	            	'u.fullname as request_name'))
 		            	*/
 	            $this->pdf->SetFont('freeserif', '', 12);
@@ -78,7 +78,7 @@ class Prints extends CI_Controller {
 	                    &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;  &nbsp;  หัวหน้างาน..................................................... <br>
 	                    &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;  &nbsp;&nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; (.................................................)
 	                <hr>
-	                
+
 	                <table border="0">
 	                    <tr>
 	                        <td>
@@ -86,7 +86,7 @@ class Prints extends CI_Controller {
 	                        1. .................................................................. <br>
 	                        2. .................................................................. <br>
 	                        3. .................................................................. <br>
-	                        
+
 	                        <b>ลงชื่อ.............................................................</b> <br>
 	                        (.................................................................) <br>
 	                        ประธานคณะกรรมการพิจารณางานซ่อมแซมและบำรุงรักษา
@@ -115,44 +115,44 @@ class Prints extends CI_Controller {
 	                <hr>
 	                <p>วันงานแล้วเสร็จ................................&nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp;
 	                ผู้รับงาน........................................</p>
-	                    ';
-	            
+	                		<i style="font-size: 13px;">วันที่พิมพ์เอกสาร: '. to_thai_date(date('Y-m-d')) . ' เวลา ' . date('H:i:s') . '</i>';
+
 	            $this->pdf->WriteHTML($html, true, false, true, false,'');
-	          
+
 	            //Close and output PDF document
-	            $this->pdf->Output($sv.'.pdf', 'I'); 
+	            $this->pdf->Output($sv.'.pdf', 'I');
             }else{
             	show_error('No service found.', 404);
             }
-            
+
     	}
 
     }
-    
+
     public function print_other_service($sv=''){
     	if(!isset($sv) || empty($sv)){
     		show_error('No service found.', 404);
     	}else{
             //get_main_service_detail($sv)
             $rs = $this->report->get_other_service_detail($sv);
-            
+
             $this->load->library('pdf');
             $this->pdf->setPrintHeader(false);
             $this->pdf->setPrintFooter(false);
             $this->pdf->setTopMargin(5);
-            
+
             // set document information
             $this->pdf->SetSubject('AA Service');
             $this->pdf->SetKeywords('AA Service');
-            
+
             // add a page
             $this->pdf->AddPage();
-            
+
             // print a line using Cell()
-            
+
             /*select(array(
-            	's.*', 'p.product_serial','p.code as product_code', 
-            	'p.name as product_name', 'o.name as owner_name', 
+            	's.*', 'p.product_serial','p.code as product_code',
+            	'p.name as product_name', 'o.name as owner_name',
             	'u.fullname as request_name'))
 	            	*/
             $this->pdf->SetFont('freeserif', '', 12);
@@ -172,9 +172,9 @@ class Prints extends CI_Controller {
             <hr>
                 <b>1. เรียน หน่วยงานซ่อมบำรุง</b>
                 &nbsp; &nbsp; &nbsp;  &nbsp; ด้วยฝ่าย/กลุ่มงาน มีความประสงค์ในการบริการซ่อมบำรุง ดังนี้  <br>
-                รายการที่ส่งซ่อม <b><u>'.$rs->product_name.'</u></b>  หมายเลขครุภัณฑ์ <b><u> - </u></b>
+                รายการที่ส่งซ่อม <b><u>'.$rs->product_name.'</u></b>  รายละเอียด <b><u>'.$rs->product_desc.'</u></b> หมายเลขครุภัณฑ์ <b><u> - </u></b>
                 ยี่ห้อ <b><u> - </u></b> รุ่น <b><u> - </u></b>  หมายเลขเครื่อง (Serial No.) <b><u> - </u></b>
-                ซ่อมครั้งที่ _____ อาการเดิม _________________________ อาการแจ้งชำรุดครั้งนี้ <b><u> '.$rs->cause.' </u></b>
+                ซ่อมครั้งที่ _____ อาการเดิม _____________________ อาการแจ้งชำรุดครั้งนี้ <b><u> '.$rs->cause.' </u></b>
                 อายุการใช้งาน <b><u> - </u></b> ปี <br>
                 บริษัทผู้ขาย /  ที่อยู่ / เบอร์โทรศัพท์ <b><u> - </u></b>
                 <br>&nbsp; &nbsp; &nbsp;  &nbsp; จึงเรียนมาเพื่อโปรดพิจารณา
@@ -200,7 +200,7 @@ class Prints extends CI_Controller {
                     &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;  &nbsp;  หัวหน้างาน..................................................... <br>
                     &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;  &nbsp;&nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; (.................................................)
                 <hr>
-                
+
                 <table border="0">
                     <tr>
                         <td>
@@ -208,7 +208,7 @@ class Prints extends CI_Controller {
                         1. .................................................................. <br>
                         2. .................................................................. <br>
                         3. .................................................................. <br>
-                        
+
                         <b>ลงชื่อ.............................................................</b> <br>
                         (.................................................................) <br>
                         ประธานคณะกรรมการพิจารณางานซ่อมแซมและบำรุงรักษา
@@ -236,13 +236,13 @@ class Prints extends CI_Controller {
                 </table>
                 <hr>
                 <p>วันงานแล้วเสร็จ................................&nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp;
-                ผู้รับงาน........................................</p>
-                    ';
-            
+                ผู้รับงาน........................................  </p>
+                		<i style="font-size: 13px;">วันที่พิมพ์เอกสาร: '. to_thai_date(date('Y-m-d')) . ' เวลา ' . date('H:i:s') . '</i>';
+
             $this->pdf->WriteHTML($html, true, false, true, false,'');
-          
+
             //Close and output PDF document
-            $this->pdf->Output($sv . '.pdf', 'I'); 
+            $this->pdf->Output($sv . '.pdf', 'I');
     	}
 
     }

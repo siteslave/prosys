@@ -70,6 +70,11 @@ var set_first_selected = function(obj){
 
 var App = {};
 
+
+App.clear_null = function(str)
+{
+	return str == null ? '-' : str;
+};
 /**
  * Ajax function
  *

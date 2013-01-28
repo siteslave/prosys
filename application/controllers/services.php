@@ -16,6 +16,7 @@ class Services extends CI_Controller
 
         $this->load->model('Service_model', 'service');
         $this->load->model('User_model', 'user');
+        $this->load->model('Client_model', 'client');
     }
 
     public function index()
@@ -67,6 +68,7 @@ class Services extends CI_Controller
                 $obj->service_type = get_type_name($r->service_type_id);
                 $obj->tech_type_name = get_type_service_name($r->type_service_id);
 				$obj->tech_more = count_technician_in_more($r->service_code);
+                $obj->pri_name = $r->pri_name;
 
                 array_push($arr_result, $obj);
             }
@@ -482,6 +484,7 @@ class Services extends CI_Controller
                 $obj->service_type = get_type_name($r->service_type_id);
                 $obj->tech_type_name = get_type_service_name($r->type_service_id);
                 $obj->tech_more = count_technician_in_more($r->service_code);
+                $obj->pri_name = $r->pri_name;
 
                 array_push($arr_result, $obj);
             }
@@ -564,6 +567,7 @@ class Services extends CI_Controller
                 $obj->service_type = get_type_name($r->service_type_id);
                 $obj->tech_type_name = get_type_service_name($r->type_service_id);
                 $obj->tech_more = count_technician_in_more($r->service_code);
+                $obj->pri_name = $r->pri_name;
 
                 array_push($arr_result, $obj);
             }
@@ -612,6 +616,7 @@ class Services extends CI_Controller
                 $obj->service_type = get_type_name($r->service_type_id);
                 $obj->tech_type_name = get_type_service_name($r->type_service_id);
                 $obj->tech_more = count_technician_in_more($r->service_code);
+                $obj->pri_name = $r->pri_name;
 
                 array_push($arr_result, $obj);
             }
@@ -704,6 +709,7 @@ class Services extends CI_Controller
 	                $obj->service_type = get_type_name($r->service_type_id);
 	                $obj->tech_type_name = get_type_service_name($r->type_service_id);
 	                $obj->tech_more = count_technician_in_more($r->service_code);
+                    $obj->pri_name = $r->pri_name;
 
 	                array_push($arr_result, $obj);
 	            }
@@ -974,5 +980,151 @@ class Services extends CI_Controller
     	}
 
     	render_json($json);
+    }
+
+    public function get_service_detail_main()
+    {
+        $sv = $this->input->post('sv');
+
+        if(empty($sv))
+        {
+            $json = '{"success": true, "msg": "ไม่พบเลขที่รับบริการ (service code)"}';
+        }
+        else
+        {
+            $rs = $this->service->get_service_detail_main($sv);
+
+            if($rs)
+            {
+                $rows = json_encode($rs);
+                $json = '{"success": true, "rows": '.$rows.'}';
+            }
+            else
+            {
+                $json = '{"success": false, "msg": "ไม่พบรายการ"}';
+            }
+        }
+
+        render_json($json);
+    }
+
+    public function get_service_detail_other()
+    {
+        $sv = $this->input->post('sv');
+
+        if(empty($sv))
+        {
+            $json = '{"success": true, "msg": "ไม่พบเลขที่รับบริการ (service code)"}';
+        }
+        else
+        {
+            $rs = $this->service->get_service_detail_other($sv);
+
+            if($rs)
+            {
+                $rows = json_encode($rs);
+                $json = '{"success": true, "rows": '.$rows.'}';
+            }
+            else
+            {
+                $json = '{"success": false, "msg": "ไม่พบรายการ"}';
+            }
+        }
+
+        render_json($json);
+    }
+
+    public function save_edit_service_main()
+    {
+        $data = $this->input->post('data');
+
+        if(empty($data))
+        {
+            $json = '{"success": false, "msg": "ไม่พบข้อมูลที่ต้องการบันทึก"}';
+        }
+        else
+        {
+            $auth = $this->user->check_login_technician($data['user_id'], $data['password']);
+
+            if($auth)
+            {
+                $rs = $this->service->save_edit_service_main($data);
+
+                if($rs)
+                {
+                    $json = '{"success": true}';
+                }
+                else
+                {
+                    $json = '{"success": false, "msg": "ไม่สามารถแก้ไขรายการได้"}';
+                }
+            }
+            else
+            {
+                $json = '{"success": false, "msg": "ชื่อผู้ใช้งาน หรือรหัสผ่านไม่ถูกต้อง"}';
+            }
+        }
+
+        render_json($json);
+    }
+
+    public function save_edit_service_other()
+    {
+        $data = $this->input->post('data');
+
+        if(empty($data))
+        {
+            $json = '{"success": false, "msg": "ไม่พบข้อมูลที่ต้องการบันทึก"}';
+        }
+        else
+        {
+            $auth = $this->user->check_login_technician($data['user_id'], $data['password']);
+
+            if($auth)
+            {
+                $rs = $this->service->save_edit_service_other($data);
+
+                if($rs)
+                {
+                    $json = '{"success": true}';
+                }
+                else
+                {
+                    $json = '{"success": false, "msg": "ไม่สามารถแก้ไขรายการได้"}';
+                }
+            }
+            else
+            {
+                $json = '{"success": false, "msg": "ชื่อผู้ใช้งาน หรือรหัสผ่านไม่ถูกต้อง"}';
+            }
+        }
+
+        render_json($json);
+    }
+
+    public function search_reg_product()
+    {
+        $query = $this->input->post('query');
+
+        if(empty($query))
+        {
+            $json = '{"success": false, "msg": "No query found."}';
+        }
+        else
+        {
+            //do search
+            $rs = $this->client->search_reg_product($query);
+            if($rs)
+            {
+                $rows = json_encode($rs);
+                $json = '{"success": true, "rows": '.$rows.'}';
+            }
+            else
+            {
+                $json = '{"success": false, "msg": "No result."}';
+            }
+        }
+
+        render_json($json);
     }
 }

@@ -102,7 +102,7 @@ if ( ! function_exists('get_service_item_id') ) {
             ->where('id', $id)
             ->get('service_items')
             ->row();
-        return $result->item_id;
+        return $result ? $result->item_id : NULL;
     }
 }
 
@@ -114,7 +114,7 @@ if ( ! function_exists('get_user_type') ) {
             ->where('username', $username)
             ->get('users')
             ->row();
-        return $result->user_type;
+        return $result ? $result->user_type : NULL;
     }
 }
 
@@ -126,7 +126,7 @@ if ( ! function_exists('get_user_status') ) {
             ->where('username', $username)
             ->get('users')
             ->row();
-        return $result->user_status;
+        return $result ? $result->user_status : NULL;
     }
 }
 if ( ! function_exists('get_user_id') ) {
@@ -137,12 +137,14 @@ if ( ! function_exists('get_user_id') ) {
             ->where('username', $username)
             ->get('users')
             ->row();
-        return $result->id;
+        return $result ? $result->id : NULL;
     }
 }
 
-if(!function_exists('get_current_name')){
-    function get_current_name(){
+if(!function_exists('get_current_name'))
+{
+    function get_current_name()
+    {
         $ci =& get_instance();
 
         return $ci->session->userdata('fullname');
@@ -221,13 +223,15 @@ if ( ! function_exists('generate_serial'))
 
         $prefix = $ci->serial->get_prefix($sr_type);
         //generate with year and month
-        if($gen_date){
+        if($gen_date)
+        {
             //formatted serial
             $sr_m = $ci->serial->get_month_prefix($sr_type);
             $sr_y = $ci->serial->get_year_prefix($sr_type);
 
             //for month prefix
-            if($sr_m != date('m')){
+            if($sr_m != date('m'))
+            {
                 //update month
                 $ci->serial->update_month($sr_type, date('m'));
                 //set to current month
@@ -239,7 +243,8 @@ if ( ! function_exists('generate_serial'))
             $current_year = date('Y') + 543;
             $short_year = substr($current_year, -2) ;
 
-            if($sr_y != $short_year){
+            if($sr_y != $short_year)
+            {
                 //update year
                 $ci->serial->update_year($sr_type, $short_year);
 				$ci->serial->reset_serial($sr_type);
@@ -247,7 +252,9 @@ if ( ! function_exists('generate_serial'))
 
             $new_sr = $prefix.'-'.$short_year.$sr_m;
 
-        }else{//generate without year and month
+        }
+        else
+        {//generate without year and month
             $new_sr = $prefix;
         }
 
@@ -263,9 +270,11 @@ if ( ! function_exists('generate_serial'))
     }
 }
 //private function for serial
-function get_string_length($sn){
+function get_string_length($sn)
+{
 
-    switch(strlen($sn)){
+    switch(strlen($sn))
+    {
         case 1:
             $new_sn = '00000'.$sn;
             break;
@@ -287,22 +296,30 @@ function get_string_length($sn){
         default:
             $new_sn = '000001';
     }
+
     return $new_sn;
 }
 
-if( !function_exists('gen_unique')){
-    function gen_unique(){
+if( !function_exists('gen_unique'))
+{
+    function gen_unique()
+    {
         $id = uniqid(hash("sha512",rand()), TRUE);
         $code = hash("sha512", $id);
         return substr($code, 0, 32);
     }
 }
 
-if(!function_exists('to_thai_date')){
-    function to_thai_date($eng_date){
-        if(strlen($eng_date) != 10){
+if(!function_exists('to_thai_date'))
+{
+    function to_thai_date($eng_date)
+    {
+        if(strlen($eng_date) != 10)
+        {
             return null;
-        }else{
+        }
+        else
+        {
             $new_date = explode('-', $eng_date);
 
             $new_y = (int) $new_date[0] + 543;
@@ -316,11 +333,16 @@ if(!function_exists('to_thai_date')){
     }
 }
 
-if(!function_exists('to_js_date')){
-    function to_js_date($eng_date){
-        if(strlen($eng_date) != 10){
+if(!function_exists('to_js_date'))
+{
+    function to_js_date($eng_date)
+    {
+        if(strlen($eng_date) != 10)
+        {
             return null;
-        }else{
+        }
+        else
+        {
             $new_date = explode('-', $eng_date);
 
             $new_y = $new_date[0];
@@ -334,26 +356,37 @@ if(!function_exists('to_js_date')){
     }
 }
 
-if(!function_exists('to_mysql_date')){
-    function to_mysql_date($eng_date){
+if(!function_exists('to_mysql_date'))
+{
+    function to_mysql_date($eng_date)
+    {
         if(strlen($eng_date) != 10){
             return null;
-        }else{
-            $new_date = explode('/', $eng_date);
+        }
+        else
+        {
+        	try {
+        		$new_date = explode('/', $eng_date);
 
-            $new_y = $new_date[2];
-            $new_m = $new_date[1];
-            $new_d = $new_date[0];
+        		$new_y = $new_date[2];
+        		$new_m = $new_date[1];
+        		$new_d = $new_date[0];
 
-            $thai_date = $new_y . '-' . $new_m . '-' . $new_d;
+        		$thai_date = $new_y . '-' . $new_m . '-' . $new_d;
 
-            return $thai_date;
+        		return $thai_date;
+        	} catch (Exception $e) {
+        		return '0000-00-00';
+        	}
+
         }
     }
 }
 
-if(!function_exists('get_technician_list')){
-	function get_technician_list(){
+if(!function_exists('get_technician_list'))
+{
+	function get_technician_list()
+	{
 		$ci =& get_instance();
 		$ci->load->model('User_model', 'user');
 
@@ -364,8 +397,10 @@ if(!function_exists('get_technician_list')){
 }
 
 
-if(!function_exists('get_admin_list')){
-	function get_admin_list(){
+if(!function_exists('get_admin_list'))
+{
+	function get_admin_list()
+	{
 		$ci =& get_instance();
 		$ci->load->model('User_model', 'user');
 
@@ -376,8 +411,10 @@ if(!function_exists('get_admin_list')){
 }
 
 
-if(!function_exists('get_service_type_list')){
-	function get_service_type_list(){
+if(!function_exists('get_service_type_list'))
+{
+	function get_service_type_list()
+	{
 		$ci =& get_instance();
 		$ci->load->model('Basic_model', 'basic');
 
@@ -387,8 +424,10 @@ if(!function_exists('get_service_type_list')){
 	}
 }
 
-if(!function_exists('get_technician_type_list')){
-	function get_technician_type_list(){
+if(!function_exists('get_technician_type_list'))
+{
+	function get_technician_type_list()
+	{
 		$ci =& get_instance();
 		$ci->load->model('Basic_model', 'basic');
 
@@ -398,7 +437,8 @@ if(!function_exists('get_technician_type_list')){
 	}
 }
 
-if(!function_exists('get_type_of_service')){
+if(!function_exists('get_type_of_service'))
+{
 	function get_type_of_service(){
 		$ci =& get_instance();
 		$ci->load->model('Basic_model', 'basic');
@@ -409,8 +449,10 @@ if(!function_exists('get_type_of_service')){
 	}
 }
 
-if(!function_exists('count_technician_in_more')){
-	function count_technician_in_more($sv){
+if(!function_exists('count_technician_in_more'))
+{
+	function count_technician_in_more($sv)
+	{
 		$ci =& get_instance();
 		$ci->load->model('Basic_model', 'basic');
 
@@ -421,30 +463,37 @@ if(!function_exists('count_technician_in_more')){
 }
 
 
-if(!function_exists('get_status_list')){
-    function get_status_list(){
+if(!function_exists('get_owner_list'))
+{
+    function get_owner_list()
+    {
+        $ci =& get_instance();
+        $ci->load->model('Basic_model', 'basic');
+
+        $rs = $ci->basic->get_owner_list();
+
+        return $rs;
+    }
+}
+
+if(!function_exists('get_status_list'))
+{
+    function get_status_list()
+    {
 
         $ci =& get_instance();
         $ci->load->model('Statuses_model', 'statuses');
 
         $rs = $ci->statuses->get_list();
-     /*
-        $status = array(
-            '1' => 'รอซ่อม',
-            '2' => 'กำลังซ่อม',
-            '3' => 'พักการซ่อม',
-            '4' => 'ยกเลิกการซ่อม',
-            '5' => 'ส่งซ่อม',
-            '6' => 'ส่งพัสดุจัดซื้ออะไหล่',
-            '7' => 'ซ่อมเสร็จ'
-        );
-*/
+
         return $rs;
     }
 }
 
-if(!function_exists('get_status_name')){
-    function get_status_name($status){
+if(!function_exists('get_status_name'))
+{
+    function get_status_name($status)
+    {
 
         $ci =& get_instance();
         $ci->load->model('Statuses_model', 'statuses');
@@ -452,17 +501,20 @@ if(!function_exists('get_status_name')){
         $rs = $ci->statuses->get_name($status);
 
         return empty($rs->name) ? '-' : $rs->name;
- /*
-        switch($status){
-            case '1': return 'รอซ่อม'; break;
-            case '2': return 'กำลังซ่อม'; break;
-            case '3': return 'พักการซ่อม'; break;
-            case '4': return 'ยกเลิกการซ่อม'; break;
-            case '5': return 'ส่งซ่อม'; break;
-            case '6': return 'ส่งพัสดุจัดซื้ออะไหล่'; break;
-            case '7': return 'ซ่อมเสร็จ'; break;
-            default: return '-'; break;
-        }
-*/
     }
+}
+
+if(!function_exists('get_discharge_status_list'))
+{
+    function get_discharge_status_list()
+    {
+        $data = array(
+            array('name' =>'ส่งพัสดุซื้อวัสดุ', 'code' => 1),
+            array('name' =>'ส่งพัสดุซื้อทดแทน', 'code' => 1),
+            array('name' =>'ส่งพัสดุจัดจ้างช่างข้างนอก', 'code' => 1)
+        );
+
+        return $data;
+    }
+
 }

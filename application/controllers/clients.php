@@ -22,6 +22,7 @@ class clients extends CI_Controller
         $this->load->model('Serial_model', 'serials');
         $this->load->model('Service_model', 'service');
         $this->load->model('User_model', 'user');
+        $this->load->model('Product_model', 'product');
     }
 
     public function index()
@@ -31,17 +32,25 @@ class clients extends CI_Controller
         $this->layout->view('clients/index_view', $data);
     }
 
-    public function search_reg_product(){
+    public function search_reg_product()
+    {
         $query = $this->input->post('query');
-        if(empty($query)){
+
+        if(empty($query))
+        {
             $json = '{"success": false, "msg": "No query found."}';
-        }else{
+        }
+        else
+        {
             //do search
             $rs = $this->client->search_reg_product($query);
-            if($rs){
+            if($rs)
+            {
                 $rows = json_encode($rs);
                 $json = '{"success": true, "rows": '.$rows.'}';
-            }else{
+            }
+            else
+            {
                 $json = '{"success": false, "msg": "No result."}';
             }
         }
@@ -50,17 +59,26 @@ class clients extends CI_Controller
     }
 
 
-    public function search_other_product(){
+    public function search_other_product()
+    {
         $query = $this->input->post('query');
-        if(empty($query)){
+
+        if(empty($query))
+        {
             $json = '{"success": false, "msg": "No query found."}';
-        }else{
+        }
+        else
+        {
             //do search
             $rs = $this->client->search_other_product($query);
-            if($rs){
+
+            if($rs)
+            {
                 $rows = json_encode($rs);
                 $json = '{"success": true, "rows": '.$rows.'}';
-            }else{
+            }
+            else
+            {
                 $json = '{"success": false, "msg": "No result."}';
             }
         }
@@ -68,26 +86,38 @@ class clients extends CI_Controller
         render_json($json);
     }
 
-    public function save_reg_product(){
+    public function save_reg_product()
+    {
         $data = $this->input->post('data');
-        if(empty($data)){
+
+        if(empty($data))
+        {
             $json = '{"success": false, "msg": "No data for save."}';
-        }else{
+        }
+        else
+        {
             //check current status
             $discharged = $this->client->check_discharged($data['product_id']);
-            if($discharged){
+
+            if($discharged)
+            {
                 //generate serial
                 $data['service_code'] = generate_serial('SERVICE', TRUE);
                 $data['user_id'] = $this->session->userdata('user_id');
 
                 $rs = $this->client->save_reg_product($data);
 
-                if($rs){
+                if($rs)
+                {
                     $json = '{"success": true}';
-                }else{
+                }
+                else
+                {
                     $json = '{"success": false, "msg": "Save error."}';
                 }
-            }else{
+            }
+            else
+            {
                 $json = '{"success": false, "msg": "รายการยังไม่ถูกจำหน่าย ไม่สามารถบันทึกรายการได้"}';
             }
 
@@ -96,36 +126,41 @@ class clients extends CI_Controller
         render_json($json);
     }
 
-     public function save_other_product(){
+     public function save_other_product()
+     {
         $data = $this->input->post('data');
-        if(empty($data)){
+
+        if(empty($data))
+        {
             $json = '{"success": false, "msg": "No data for save."}';
-        }else{
-        	if($data['isupdate'] == '1'){
+        }
+        else
+        {
+        	if($data['isupdate'] == '1')
+        	{
         		$rs = $this->client->update_other_product($data);
-				if($rs){
+
+				if($rs)
+				{
 					$json = '{"success": true}';
-				}else{
+				}
+				else
+				{
 					$json = '{"success": false, "Can\'t update data."}';
 				}
-        	}else{
-        		//check current status
-	            $current_status = $this->client->get_current_product_other_status($data['id']);
-	            if($current_status == '4' || $current_status == '5' || $current_status == '0'){
-	                //generate serial
-	                $data['service_code'] = generate_serial('SERVICE_OTHER', TRUE);
-	                $data['user_id'] = $this->session->userdata('user_id');
+        	}
+        	else
+        	{
+        		$data['service_code'] = generate_serial('SERVICE_OTHER', TRUE);
+	            $data['user_id'] = $this->session->userdata('user_id');
 
-	                $rs = $this->client->save_other_product($data);
+	            $rs = $this->client->save_other_product($data);
 
-	                if($rs){
-	                    $json = '{"success": true}';
-	                }else{
-	                    $json = '{"success": false, "msg": "Save error."}';
-	                }
-	            }else{
-	                $json = '{"success": false, "msg": "รายการยังไม่ถูกจำหน่าย ไม่สามารถบันทึกรายการได้"}';
-	            }
+                if($rs){
+                    $json = '{"success": true}';
+                }else{
+                    $json = '{"success": false, "msg": "Save error."}';
+                }
         	}
         }
 
@@ -377,6 +412,7 @@ class clients extends CI_Controller
                 $data['product_code'] = $rs->product_code;
                 $data['product_name'] = $rs->product_name;
                 $data['owner_name'] = $rs->owner_name;
+                $data['contact_name'] = $rs->contact_name;
 
                 $this->layout->view('clients/service_info_view', $data);
             }else{
@@ -401,6 +437,8 @@ class clients extends CI_Controller
                 $data['cause'] = $rs->cause;
                 $data['product_name'] = $rs->product_name;
                 $data['owner_name'] = $rs->owner_name;
+                $data['contact_name'] = $rs->contact_name;
+                $data['product_desc'] = $rs->product_desc;
 
                 $this->layout->view('clients/service_info_other_view', $data);
             }else{
@@ -460,4 +498,60 @@ class clients extends CI_Controller
 
         render_json($json);
     }
+
+    public function register_products()
+    {
+    	$data['owners'] = $this->product->get_owner();
+    	$data['types'] = $this->product->get_type();
+    	$data['brands'] = $this->product->get_brand();
+    	$data['models'] = $this->product->get_model();
+    	$data['suppliers'] = $this->product->get_supplier();
+
+    	$this->layout->view('clients/register_product_view', $data);
+    }
+
+    public function save_products(){
+
+    	$data['code'] = $this->input->post('code');
+    	$data['name'] = $this->input->post('name');
+    	$data['product_serial'] = $this->input->post('product_serial');
+    	$data['purchase_price'] = $this->input->post('purchase_price');
+    	$data['purchase_date'] = $this->input->post('purchase_date');
+    	$data['brand_id'] = $this->input->post('brand_id');
+    	$data['owner_id'] = $this->input->post('owner_id');
+    	$data['model_id'] = $this->input->post('model_id');
+    	$data['type_id'] = $this->input->post('type_id');
+    	$data['supplier_id'] = $this->input->post('supplier_id');
+
+    	if(empty($data)){
+    		$json = '{"success": false, "msg": "No data for save."}';
+    	}else{
+    		//check duplicate product code
+    		if(!empty($data['code'])){
+    			$duplicated = $this->product->check_duplicate($data['code']);
+    		}else{
+    			$duplicated = FALSE;
+    		}
+
+    		if($duplicated){
+    			$json = '{"success": false, "msg": "รายการนี้มีอยู่แล้วกรุณาตรวจสอบทะเบียนครุภัณฑ์"}';
+    		}else{
+    			//do save
+    			if(empty($data['code'])){
+    				$data['code'] = generate_serial('PRODUCT');
+    			}
+
+    			$result = $this->product->save($data);
+
+    			if($result){
+    				$json = '{"success": true}';
+    			}else{
+    				$json = '{"success": false, "Database error, please check your data and try again."}';
+    			}
+    		}
+    	}
+
+    	render_json($json);
+    }
+
 }

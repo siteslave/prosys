@@ -37,6 +37,12 @@
                     </div>
                 </div>
                 <div class="control-group">
+                    <label class="control-label" for="txt_contact_name">ผู้แจ้ง/ติดต่อ</label>
+                    <div class="controls">
+                        <input type="text" class="input-xxlarge uneditable-input" disabled="disabled" id="txt_contact_name" value="<?php echo $contact_name;?>">
+                    </div>
+                </div>
+                <div class="control-group">
                     <label class="control-label" for="txt_owner_name">หน่วยงาน</label>
                     <div class="controls">
                         <input type="text" class="input-xxlarge uneditable-input" disabled="disabled" id="txt_owner_name" value="<?php echo $owner_name;?>">
