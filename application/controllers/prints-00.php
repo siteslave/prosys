@@ -36,6 +36,13 @@ class Prints extends CI_Controller {
 	            // add a page
 	            $this->pdf->AddPage();
 
+	            // print a line using Cell()
+
+	            /*select(array(
+	            	's.*', 'p.product_serial','p.code as product_code',
+	            	'p.name as product_name', 'o.name as owner_name',
+	            	'u.fullname as request_name'))
+		            	*/
 	            $this->pdf->SetFont('freeserif', '', 12);
 	            $html = '
 	            <table border=0>
@@ -164,6 +171,7 @@ class Prints extends CI_Controller {
                     $this->pdf->lastPage();
                 }
 
+
                 $rs_history = $this->service->get_history_main($rs->product_id);
 
                 if(count($rs_history) > 0)
@@ -186,7 +194,6 @@ class Prints extends CI_Controller {
                     <tbody>
                     ';
 
-                    $total = 0;
                     $i = 1;
                     foreach($rs_history as $r)
                     {
@@ -198,10 +205,9 @@ class Prints extends CI_Controller {
                                     <td width="100" align="right" style="border-bottom-width: 1px;">'.$r->contact_name.'</td>
                                     <td width="70" align="right" style="border-bottom-width: 1px;">'.$r->status_name.'</td>
                                  </tr>';
-                        //$total += $t->price * $t->qty;
                         $i++;
                     }
-                    //$html3 .= '<tr><td colspan="5" align="right">รวมเป็นเงิน</td><td align="right"><strong>'.number_format($total, 2).'</strong></td></tr>';
+
                     $html3 .= '</tbody></table>';
 
                     $this->pdf->WriteHTML($html3, true, false, true, false,'');
@@ -209,15 +215,12 @@ class Prints extends CI_Controller {
                 }
 
 	            //Close and output PDF document
-                ob_end_clean();
-                //or use ob_clean();
 	            $this->pdf->Output($sv.'.pdf', 'I');
             }else{
             	show_error('No service found.', 404);
             }
 
     	}
-
     }
 
     public function print_other_service($sv=''){
@@ -384,7 +387,6 @@ class Prints extends CI_Controller {
             //Close and output PDF document
             $this->pdf->Output($sv . '.pdf', 'I');
     	}
-
     }
 
     public function print_items()
@@ -445,8 +447,6 @@ class Prints extends CI_Controller {
             $html2 .= '</tbody></table>';
             $this->pdf->WriteHTML($html2, true, false, true, false,'');
             $this->pdf->lastPage();
-
-            ob_end_clean();
 
             //Close and output PDF document
             $this->pdf->Output($sv . '.pdf', 'I');

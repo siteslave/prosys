@@ -952,6 +952,7 @@
         <form action="#" class="form-inline well">
             <label>เลขที่ใบแจ้งซ่อม</label>
             <input type="text" class="input-medium uneditable-input" disabled="disabled" id="txt_items_sv">
+            <input type="hidden" id="txt_items_sv_type" value="0">
         </form>
         <table class="table table-striped table-hover" id="tbl_item_list">
             <thead>
@@ -980,7 +981,7 @@
         </blockquote>
     </div>
     <div class="modal-footer">
-        <a href="#" class="btn btn-info"><i class="icon-print icon-white"></i> พิมพ์รายการ</a>
+        <a href="#" id="btn_items_print" class="btn btn-info"><i class="icon-print icon-white"></i> พิมพ์รายการ</a>
         <a href="#" class="btn btn-danger" data-dismiss="modal"><i class="icon-off icon-white"></i> ปิดหน้าต่าง</a>
     </div>
 </div>

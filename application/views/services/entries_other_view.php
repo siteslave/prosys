@@ -130,6 +130,29 @@
                     <textarea id="txt_act_detail" rows="4" class="input-xxlarge"></textarea>
                 </div>
             </div>
+            <legend>ยืนยัน (Confirmation)</legend>
+            <div class="control-group">
+                <label class="control-label" for="sl_act_user">ชื่อผู้ใช้งาน</label>
+                <div class="controls">
+                    <select id="sl_act_user">
+                        <option value="">---</option>
+                        <?php
+                        $users = get_technician_list();
+
+                        foreach($users as $u){
+                            echo '<option value="'.$u->id.'">'.$u->fullname.'</option>';
+                        }
+                        ?>
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="txt_act_password">รหัสผ่าน</label>
+                <div class="controls">
+                    <input type="password" id="txt_act_password">
+                </div>
+            </div>
         </form>
     </div>
     <div class="modal-footer">
@@ -185,6 +208,29 @@
                             <input type="text" class="input-mini" id="txt_item_qty" data-type="number">
                         </div>
                     </div>
+                </div>
+            </div>
+            <legend>ยืนยัน (Confirmation)</legend>
+            <div class="control-group">
+                <label class="control-label" for="sl_item_user">ชื่อผู้ใช้งาน</label>
+                <div class="controls">
+                    <select id="sl_item_user">
+                        <option value="">---</option>
+                        <?php
+                        $users = get_technician_list();
+
+                        foreach($users as $u){
+                            echo '<option value="'.$u->id.'">'.$u->fullname.'</option>';
+                        }
+                        ?>
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="txt_item_password">รหัสผ่าน</label>
+                <div class="controls">
+                    <input type="password" id="txt_item_password">
                 </div>
             </div>
         </form>

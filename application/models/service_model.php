@@ -437,4 +437,18 @@ class Service_model extends CI_Model
         return $rs;
     }
 
+    public function get_history_main($product_id)
+    {
+        $rs = $this->db
+            ->select(array('s.*', 'p.*', 't.name as status_name'))
+            ->join('products p', 'p.id=s.product_id', 'left')
+            //->join('owners o', 'o.id=p.owner_id', 'left')
+            ->join('service_status t', 't.id=s.service_status', 'left')
+            ->where('s.product_id', $product_id)
+            ->order_by('s.date_serv')
+            ->get('main_services s')
+            ->result();
+
+        return $rs;
+    }
 }

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if ( ! function_exists('render_json'))
 {
     function render_json($json)
@@ -351,7 +351,7 @@ if(!function_exists('to_js_date'))
 
             $thai_date = $new_d . '/' . $new_m . '/' . $new_y;
 
-            return $js_date;
+            return $thai_date;
         }
     }
 }
@@ -517,4 +517,12 @@ if(!function_exists('get_discharge_status_list'))
         return $data;
     }
 
+}
+
+if(!function_exists('get_cancel_status'))
+{
+    function get_cancel_status()
+    {
+        return 8;
+    }
 }

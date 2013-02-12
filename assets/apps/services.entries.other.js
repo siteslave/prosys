@@ -36,11 +36,10 @@ $(function(){
     };
 
     entries.ajax = {
-        save_activities: function(sv, detail, cb){
+        save_activities: function(data, cb){
             var url = '/services/save_activities',
                 params = {
-                    sv: sv,
-                    detail: detail
+                    data: data
                 };
 
             App.ajax(url, params, function(err, data){
@@ -175,6 +174,8 @@ $(function(){
     });
 
     $('#btn_new_activities').click(function(){
+        set_first_selected($('#sl_act_user'));
+        $('#txt_act_password').val('');
         entries.modal.show_new_activities();
     });
 
@@ -183,15 +184,22 @@ $(function(){
     });
     //save activities
     $('#btn_act_do_save').click(function(){
-        var sv = $('#txt_act_service_code').val(),
-            detail = $('#txt_act_detail').val();
+        var data = {};
+        data.sv = $('#txt_act_service_code').val(),
+        data.detail = $('#txt_act_detail').val();
+        data.user_id = $('#sl_act_user').val();
+        data.password = $('#txt_act_password').val();
 
-        if(!sv){
+        if(!data.sv){
             App.alert('กรุณาระบุ รหัสรับซ่อม');
-        }else if(!detail){
+        }else if(!data.detail){
             App.alert('กรุณาระบุ การให้บริการ');
+        }else if(!data.user_id){
+            App.alert('กรุณาระบุชื่อผู้ใช้งาน');
+        }else if(!data.password){
+            App.alert('กรุณาระบุรหัสผ่าน');
         }else{
-            entries.ajax.save_activities(sv, detail, function(err){
+            entries.ajax.save_activities(data, function(err){
                 if(err){
                     App.alert(err);
                 }else{
@@ -242,6 +250,8 @@ $(function(){
     });
 
     entries.clear_item_form = function(){
+        set_first_selected($('#sl_item_user'));
+        $('#txt_item_password').val('');
         $('#txt_item_name').val('');
         $('#txt_item_id').val('');
         $('#txt_item_price').val('');
@@ -302,6 +312,8 @@ $(function(){
         items.id = $('#txt_item_id').val();
         items.price = $('#txt_item_price').val();
         items.qty = $('#txt_item_qty').val();
+        items.user_id = $('#sl_item_user').val();
+        items.password = $('#txt_item_password').val();
 
         if(!items.id){
             App.alert('กรุณาระบุ รายการค่าใช้จ่าย/อุปกรณ์');
@@ -309,6 +321,10 @@ $(function(){
             App.alert('กรุณาระบุ ราคา');
         }else if(!items.qty || items.qty <= 0){
             App.alert('กรุณาระบุ จำนวน');
+        }else if(!items.user_id){
+            App.alert('กรุณาระบุชื่อผู้ใช้งาน');
+        }else if(!items.password){
+            App.alert('กรุณาระบุรหัสผ่าน');
         }else{
             items.sv = $('#txt_service_code').val();
             items.isupdate = $('#txt_item_isupdate').val();

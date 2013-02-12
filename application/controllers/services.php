@@ -321,7 +321,7 @@ class Services extends CI_Controller
         	}else{
         		$validated = $this->user->check_login_technician($data['user_id'], $data['password']);
         		if($validated){
-        			$this->service->user_id = $this->user_id;
+        			$this->service->user_id = $data['user_id'];
         			$rs = $this->service->save_activities($data['sv'], $data['detail']);
         			if($rs){
         				$json = '{"success": true}';
@@ -384,24 +384,33 @@ class Services extends CI_Controller
         	if($discharged){
         		$json = '{"success": false, "msg": "รายการนี้ถูกจำหน่ายแล้วไม่สามารถแก้ไขรายการได้"}';
         	}else{
-        		if($data['isupdate'] == '1'){
-        			//update
-        			$id = get_service_item_id($data['id']);
-        			$detail = 'แก้ไขค่าใช้จ่าย --> ' . get_item_name($id) . ', จำนวน ' . $data['qty'] . ', ราคา ' . $data['price'] . ' บาท';
-        			$rs = $this->service->update_item($data);
-        		}else{
-        			$id = (int) $data['id'];
-        			$detail = 'เพิ่มค่าใช้จ่าย --> ' . get_item_name($id) . ', จำนวน ' . $data['qty'] . ', ราคา ' . $data['price'] . ' บาท';
-        			$rs = $this->service->save_item($data);
-        		}
+                $validated = $this->user->check_login_technician($data['user_id'], $data['password']);
+                if($validated)
+                {
+                    if($data['isupdate'] == '1'){
+                        //update
+                        $id = get_service_item_id($data['id']);
+                        $detail = 'แก้ไขค่าใช้จ่าย --> ' . get_item_name($id) . ', จำนวน ' . $data['qty'] . ', ราคา ' . $data['price'] . ' บาท';
+                        $rs = $this->service->update_item($data);
+                    }else{
+                        $id = (int) $data['id'];
+                        $detail = 'เพิ่มค่าใช้จ่าย --> ' . get_item_name($id) . ', จำนวน ' . $data['qty'] . ', ราคา ' . $data['price'] . ' บาท';
+                        $rs = $this->service->save_item($data);
+                    }
 
-        		if($rs){
-        			$this->service->user_id = $this->user_id;
-        			$rs = $this->service->save_activities($data['sv'], $detail);
-        			$json = '{"success": true}';
-        		}else{
-        			$json = '{"success": false, "msg": "Save/update data error."}';
-        		}
+                    if($rs){
+                        $this->service->user_id = $data['user_id'];
+                        $this->service->save_activities($data['sv'], $detail);
+                        $json = '{"success": true}';
+                    }else{
+                        $json = '{"success": false, "msg": "Save/update data error."}';
+                    }
+                }
+                else
+                {
+                    $json  = '{"success": false, "msg": "ชื่อผู้ใช้งาน/รหัสผ่านไม่ถูกต้อง"}';
+                }
+
         	}
         }
 

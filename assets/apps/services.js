@@ -535,7 +535,7 @@ $(function(){
                     '<li class="dropdown-submenu pull-left">' +
                     '<a tabindex="-1" href="#"><i class="icon-th-list"></i> ตัวเลือกอื่นๆ</a>' +
                     '<ul class="dropdown-menu">' +
-                    '<li><a href="javascript:void(0);" data-name="btn_get_items" data-sv="'+v.service_code+'"><i class="icon-wrench"></i> ข้อมูลอะไหล่</a></li>' +
+                    '<li><a href="javascript:void(0);" data-name="btn_get_items" data-sv-type="1" data-sv="'+v.service_code+'"><i class="icon-wrench"></i> ข้อมูลอะไหล่</a></li>' +
                     '<li><a href="javascript:void(0);" data-name="btn_other_edit_service" data-sv="'+v.service_code+'"><i class="icon-edit"></i> แก้ไขใบแจ้งซ่อม</a></li>' +
                     '<li><a href="javascript:void(0);" data-name="btn_show_assign_type_other" data-sv="'+v.service_code+'"><i class="icon-star"></i> กำหนดประเภทงาน</a></li>' +
                     '<li><a href="javascript:void(0);" data-name="btn_show_discharge" data-sv="'+v.service_code+'"><i class="icon-check"></i> จำหน่ายรายการ</a></li>' +
@@ -976,7 +976,7 @@ $(function(){
                      '<li class="dropdown-submenu pull-left">' +
                      '<a tabindex="-1" href="#"><i class="icon-th-list"></i> ตัวเลือกอื่นๆ</a>' +
                      '<ul class="dropdown-menu">' +
-                     '<li><a href="javascript:void(0);" data-name="btn_get_items" data-sv="'+v.service_code+'"><i class="icon-wrench"></i> ข้อมูลอะไหล่</a></li>' +
+                     '<li><a href="javascript:void(0);" data-name="btn_get_items" data-sv-type="0" data-sv="'+v.service_code+'"><i class="icon-wrench"></i> ข้อมูลอะไหล่</a></li>' +
                      '<li><a href="javascript:void(0);" data-name="btn_edit_service" data-sv="'+v.service_code+'"><i class="icon-edit"></i> แก้ไขใบแจ้งซ่อม</a></li>' +
                      '<li><a href="javascript:void(0);" data-name="btn_show_assign_type_main" data-sv="'+v.service_code+'"><i class="icon-star"></i> กำหนดประเภทงาน</a></li>' +
                      '<li><a href="javascript:void(0);" data-name="btn_show_discharge" data-sv="'+v.service_code+'"><i class="icon-check"></i> จำหน่ายรายการ</a></li>' +
@@ -1711,12 +1711,33 @@ $(function(){
     });
 
     $('a[data-name="btn_get_items"]').live('click', function(){
-       var sv = $(this).attr('data-sv');
+       var sv = $(this).attr('data-sv'),
+           sv_type = $(this).attr('data-sv-type');
+
         $('#txt_items_sv').val(sv);
+        $('#txt_items_sv_type').val(sv_type);
         service.get_item(sv);
 
         service.modal.show_item();
     });
+
+    $('#btn_items_print').click(function(){
+        var sv = $('#txt_items_sv').val(),
+            sv_type = $('#txt_items_sv_type').val();
+
+        if(sv_type == '0')
+        {
+            App.goto_url('/prints/print_main_service/' + sv);
+        }
+        else
+        {
+            {
+                App.goto_url('/prints/print_other_service/' + sv);
+            }
+        }
+
+    });
+
     service.get_regcode_status_list();
 });
 
